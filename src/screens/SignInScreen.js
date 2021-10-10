@@ -1,39 +1,28 @@
 import React, { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  Button,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
+import { View, StyleSheet, Text, Button } from "react-native";
+
+import InputFields from "../components/InputFields";
+import IconFields from "../components/IconFields";
 
 const SignInScreen = () => {
   return (
-    <View>
-      <Text>Cos</Text>
-      <View>
-        <View>
-          <TextInput />
-        </View>
-        <View>
-          <TextInput />
-        </View>
-      </View>
-      <View style={{ display: "flex", flexDirection: "row" }}>
-        <FontAwesome name="google-plus" size={24} color="black" />
-        <FontAwesome name="facebook" size={24} color="black" />
-        <TouchableOpacity>
-          <FontAwesome name="twitter" size={50} color="black" />
-          <Text>Znika</Text>
-        </TouchableOpacity>
-      </View>
+    <View style={styles.signInView}>
+      <InputFields />
+      <IconFields />
       <Button title="Sign in" onPress={() => console.log("..")} />
     </View>
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  signInView: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    justifyContent: "space-between",
+  },
+});
 
 export default SignInScreen;
