@@ -5,7 +5,7 @@ import { Feather } from "@expo/vector-icons";
 
 const InputFields = () => {
   return (
-    <View>
+    <View style={styles.inputFieldsView}>
       <View style={styles.inputView}>
         <AntDesign style={styles.inputIcon} name="user" color="black" />
         <TextInput style={styles.inputStyle} placeholder="Email or Username" />
@@ -19,6 +19,9 @@ const InputFields = () => {
 };
 
 const styles = StyleSheet.create({
+  inputFieldsView: {
+    top: 100,
+  },
   inputView: {
     display: "flex",
     flexDirection: "row",
