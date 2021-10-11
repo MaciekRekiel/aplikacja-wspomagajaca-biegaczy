@@ -19,7 +19,7 @@ Jeżeli używasz urządzenia fizycznego:
 - Przeskanuj kod QR wygenerowany w wyniku uruchomienia komendy npm start
 
 
-#(...)(En.)
+
 
 ## REQUIREMENTS
 - Node.js
