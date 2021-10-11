@@ -7,7 +7,7 @@
 - Expo
 - Android Emulator/Physical Device
 
-If you're using phisical device "Expo Go" mobile application is required otherwise you may use android emulator
+If you're using physical device "Expo Go" mobile application is required otherwise you may use android emulator
 
 ## INSTALATION
 - npm install --legacy-peer-deps
