@@ -1,6 +1,26 @@
-# Aplikacja mobilna wspomagająca Biegaczy 
+# Aplikacja mobilna wspomagająca Biegaczy (Pl.)
 
-(En.)
+## WYMAGANIA
+- Node.js
+- Expo
+- Android Emulator/Urządzenie fizyczne
+
+Jeżeli korzystasz z urządzenia fizycznego również wymagana jest aplikacja "Expo Go".
+
+## INSTALACJA
+- npm install -legacy-peer-deps
+
+## URUCHAMIANIE APLIKACJI
+- npm start
+
+Jeżeli używasz urządzenia fizycznego:
+- Otwórz aplikację "Expo Go" na swoim telefonie
+- W zakładce TOOLS wybierz opcję Scan QR Code
+- Przeskanuj kod QR wygenerowany w wyniku uruchomienia komendy npm start
+
+
+#(...)(En.)
+
 ## REQUIREMENTS
 - Node.js
 - Expo
@@ -19,21 +39,4 @@ If you're using physical device:
 - In TOOLS section choose Scan QR Code
 - Scan QR Code that was provided by npm start command
 
-(Pl.)
-## WYMAGANIA
-- Node.js
-- Expo
-- Android Emulator/Urządzenie fizyczne
 
-Jeżeli korzystasz z urządzenia fizycznego również wymagana jest aplikacja "Expo Go".
-
-## INSTALACJA
-- npm install -legacy-peer-deps
-
-## URUCHAMIANIE APLIKACJI
-- npm start
-
-Jeżeli używasz urządzenia fizycznego:
-- Otwórz aplikację "Expo Go" na swoim telefonie
-- W zakładce TOOLS wybierz opcję Scan QR Code
-- Przeskanuj kod QR wygenerowany w wyniku uruchomienia komendy npm start
