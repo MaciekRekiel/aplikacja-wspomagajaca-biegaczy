@@ -1,6 +1,6 @@
 # Aplikacja mobilna wspomagająca Biegaczy
 
-##(Pl.)
+## (Pl.)
 ### WYMAGANIA
 - Node.js
 - Expo
