@@ -27,7 +27,7 @@ If you're using physical device:
 
 Jeżeli korzystasz z urządzenia fizycznego również wymagana jest aplikacja "Expo Go".
 
-## INSTALATION
+## INSTALACJA
 - npm install -legacy-peer-deps
 
 ## URUCHAMIANIE APLIKACJI
