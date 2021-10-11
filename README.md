@@ -1,16 +1,17 @@
-# Aplikacja mobilna wspomagająca Biegaczy (Pl.)
+# Aplikacja mobilna wspomagająca Biegaczy
 
-## WYMAGANIA
+##(Pl.)
+### WYMAGANIA
 - Node.js
 - Expo
 - Android Emulator/Urządzenie fizyczne
 
 Jeżeli korzystasz z urządzenia fizycznego również wymagana jest aplikacja "Expo Go".
 
-## INSTALACJA
+### INSTALACJA
 - npm install -legacy-peer-deps
 
-## URUCHAMIANIE APLIKACJI
+### URUCHAMIANIE APLIKACJI
 - npm start
 
 Jeżeli używasz urządzenia fizycznego:
@@ -19,19 +20,18 @@ Jeżeli używasz urządzenia fizycznego:
 - Przeskanuj kod QR wygenerowany w wyniku uruchomienia komendy npm start
 
 
-
-
-## REQUIREMENTS
+## (En.)
+### REQUIREMENTS
 - Node.js
 - Expo
 - Android Emulator/Physical Device
 
 If you're using physical device "Expo Go" mobile application is required otherwise you may use android emulator
 
-## INSTALATION
+### INSTALATION
 - npm install --legacy-peer-deps
 
-## RUNNING THE APPLICATION
+### RUNNING THE APPLICATION
 - npm start
 
 If you're using physical device:
