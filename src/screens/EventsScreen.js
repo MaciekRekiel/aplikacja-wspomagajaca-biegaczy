@@ -1,13 +1,22 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { Button, Text } from "react-native-elements";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const EventsScreen = ({ navigation }) => {
   return (
-    <View>
+    <SafeAreaView>
       <Text h3>Events Screen</Text>
-    </View>
+    </SafeAreaView>
   );
+};
+
+EventsScreen.navigationOptions = {
+  title: "Events",
+  tabBarIcon: ({ tintColor }) => {
+    return <MaterialIcons name="event" size={20} color={tintColor} />;
+  },
 };
 
 const styles = StyleSheet.create({});

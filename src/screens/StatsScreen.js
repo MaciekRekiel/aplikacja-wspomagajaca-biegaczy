@@ -1,13 +1,22 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { Button, Text } from "react-native-elements";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { FontAwesome } from "@expo/vector-icons";
 
 const StatsScreen = ({ navigation }) => {
   return (
-    <View>
+    <SafeAreaView>
       <Text h3>Stats Screen</Text>
-    </View>
+    </SafeAreaView>
   );
+};
+
+StatsScreen.navigationOptions = {
+  title: "Statistics",
+  tabBarIcon: ({ tintColor }) => {
+    return <FontAwesome name="bar-chart" size={20} color={tintColor} />;
+  },
 };
 
 const styles = StyleSheet.create({});
