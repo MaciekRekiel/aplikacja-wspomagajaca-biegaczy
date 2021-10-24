@@ -1,16 +1,25 @@
 import React from "react";
-import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
-import { Text, Avatar, Button, ListItem } from "react-native-elements";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View, StyleSheet, ScrollView } from "react-native";
+import { Text, Avatar, Button } from "react-native-elements";
+import Card from "../components/Card";
 
 import Spacer from "../components/Spacer";
 
 const HomeScreen = ({ navigation }) => {
+  const data = [
+    { title: "Title 1", subtitle: "Subtitle 1" },
+    { title: "Title 2", subtitle: "Subtitle 2" },
+    { title: "Title 3", subtitle: "Subtitle 3" },
+    { title: "Title 4", subtitle: "Subtitle 4" },
+    { title: "Title 5", subtitle: "Subtitle 5" },
+    { title: "Title 6", subtitle: "Subtitle 6" },
+    { title: "Title 7", subtitle: "Subtitle 7" },
+  ];
+
   return (
-    // <SafeAreaView style={{ flex: 1, borderColor: "green", borderWidth: 1 }}>
     <ScrollView>
       <View style={styles.container}>
-        <Spacer>
+        <View>
           <View style={styles.row}>
             <Avatar
               rounded
@@ -27,73 +36,8 @@ const HomeScreen = ({ navigation }) => {
               onPress={() => navigation.navigate("Signin")}
             />
           </View>
-          <View style={styles.card}>
-            <Text h2>Twoje Nadchodzące eventy...</Text>
-            <TouchableOpacity>
-              <ListItem>
-                <ListItem.Content>
-                  <ListItem.Title>Title1</ListItem.Title>
-                  <ListItem.Subtitle>Subtitle1</ListItem.Subtitle>
-                </ListItem.Content>
-                <ListItem.Chevron />
-              </ListItem>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <ListItem>
-                <ListItem.Content>
-                  <ListItem.Title>Title2</ListItem.Title>
-                  <ListItem.Subtitle>Subtitle2</ListItem.Subtitle>
-                </ListItem.Content>
-                <ListItem.Chevron />
-              </ListItem>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <ListItem>
-                <ListItem.Content>
-                  <ListItem.Title>Title2</ListItem.Title>
-                  <ListItem.Subtitle>Subtitle2</ListItem.Subtitle>
-                </ListItem.Content>
-                <ListItem.Chevron />
-              </ListItem>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <ListItem>
-                <ListItem.Content>
-                  <ListItem.Title>Title2</ListItem.Title>
-                  <ListItem.Subtitle>Subtitle2</ListItem.Subtitle>
-                </ListItem.Content>
-                <ListItem.Chevron />
-              </ListItem>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <ListItem>
-                <ListItem.Content>
-                  <ListItem.Title>Title2</ListItem.Title>
-                  <ListItem.Subtitle>Subtitle2</ListItem.Subtitle>
-                </ListItem.Content>
-                <ListItem.Chevron />
-              </ListItem>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <ListItem>
-                <ListItem.Content>
-                  <ListItem.Title>Title2</ListItem.Title>
-                  <ListItem.Subtitle>Subtitle2</ListItem.Subtitle>
-                </ListItem.Content>
-                <ListItem.Chevron />
-              </ListItem>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <ListItem>
-                <ListItem.Content>
-                  <ListItem.Title>Title2</ListItem.Title>
-                  <ListItem.Subtitle>Subtitle2</ListItem.Subtitle>
-                </ListItem.Content>
-                <ListItem.Chevron />
-              </ListItem>
-            </TouchableOpacity>
-          </View>
-        </Spacer>
+          <Card title="Twoje Nadchodzące Eventy..." data={data} />
+        </View>
         <Spacer>
           <Button
             title="Rozpocznij Bieg"
@@ -102,7 +46,6 @@ const HomeScreen = ({ navigation }) => {
         </Spacer>
       </View>
     </ScrollView>
-    // </SafeAreaView>
   );
 };
 
@@ -132,7 +75,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 24,
+    margin: 15,
   },
 });
 

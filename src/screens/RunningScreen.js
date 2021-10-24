@@ -9,15 +9,6 @@ import Column from "../components/Column";
 
 const RunningScreen = () => {
   const [start, setStart] = useState(false);
-  const [time, setTime] = useState(0);
-
-  // useEffect(() => {
-  //   let id = setInterval(() => {
-  //     setTime((currentValue) => {
-  //       return currentValue + 1;
-  //     });
-  //   }, 1000);
-  // }, []);
 
   const initalRegion = {
     latitude: 51.23612,
@@ -31,7 +22,7 @@ const RunningScreen = () => {
       <Spacer>
         <View style={styles.card}>
           <Column title="KM" value={0} />
-          <Column title="Czas" value={time} />
+          <Column title="Czas" value={0} />
           <Column title="Kcal" value={0} />
         </View>
       </Spacer>
