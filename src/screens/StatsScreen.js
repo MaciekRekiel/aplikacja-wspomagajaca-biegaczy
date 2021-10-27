@@ -1,6 +1,6 @@
 import React from "react";
 import { ScrollView, View, StyleSheet, Dimensions } from "react-native";
-import { Button, Text } from "react-native-elements";
+import { Text } from "react-native-elements";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FontAwesome } from "@expo/vector-icons";
 import { LineChart } from "react-native-chart-kit";

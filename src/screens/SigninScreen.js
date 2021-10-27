@@ -13,7 +13,6 @@ const SigninScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const { state, signin } = useContext(AuthContext);
 
-  console.log(state);
   return (
     <View style={styles.container}>
       <Spacer>

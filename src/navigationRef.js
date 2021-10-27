@@ -1,5 +1,7 @@
 import { NavigationActions } from "react-navigation";
 
+// Navigation available outside react components
+
 let navigator;
 
 export const setNavigator = (nav) => {

@@ -1,9 +1,10 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import { Input, Text, Button } from "react-native-elements";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
+import _ from "lodash";
 
 import { Context as AuthContext } from "../context/AuthContext";
 import Spacer from "../components/Spacer";
@@ -14,8 +15,22 @@ const SignupScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState({});
 
-  const { signup } = useContext(AuthContext);
+  const {
+    state: { errorMessages },
+    signup,
+  } = useContext(AuthContext);
+
+  useEffect(() => {
+    const errorsObj = {};
+    for (let err in errorMessages) {
+      errorsObj[err] = errorMessages[err];
+    }
+    if (!_.isEmpty(errorsObj)) {
+      setErrors(errorsObj);
+    }
+  }, [errorMessages]);
 
   return (
     <View style={styles.container}>
@@ -30,6 +45,7 @@ const SignupScreen = ({ navigation }) => {
         autoCapitalize="none"
         value={login}
         onChangeText={setLogin}
+        errorMessage={errors.loginIsEmpty}
       />
       <Input
         label="Email"
@@ -39,6 +55,7 @@ const SignupScreen = ({ navigation }) => {
         autoCapitalize="none"
         value={email}
         onChangeText={setEmail}
+        errorMessage={errors.emailIsEmpty}
       />
       <Input
         label="Password"
@@ -49,6 +66,7 @@ const SignupScreen = ({ navigation }) => {
         secureTextEntry
         value={password}
         onChangeText={setPassword}
+        errorMessage={errors.passwordIsEmpty}
       />
       <Input
         label="Confirm Password"
@@ -59,6 +77,7 @@ const SignupScreen = ({ navigation }) => {
         secureTextEntry
         value={confirmPassword}
         onChangeText={setConfirmPassword}
+        errorMessage={errors.confirmPasswordIsEmpty}
       />
       <Spacer>
         <Button
@@ -85,6 +104,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     marginBottom: 100,
+  },
+  error: {
+    color: "red",
+    fontSize: 16,
+    marginHorizontal: 15,
   },
 });
 

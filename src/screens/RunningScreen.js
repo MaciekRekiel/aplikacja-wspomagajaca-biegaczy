@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { Text, Button } from "react-native-elements";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Button } from "react-native-elements";
 import MapView, { Circle } from "react-native-maps";
 
 import Spacer from "../components/Spacer";
