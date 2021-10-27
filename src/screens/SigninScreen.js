@@ -1,24 +1,32 @@
-import React from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState, useContext } from "react";
+import { View, StyleSheet } from "react-native";
 import { Input, Text, Button } from "react-native-elements";
-
 import { AntDesign } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 
+import { Context as AuthContext } from "../context/AuthContext";
 import Spacer from "../components/Spacer";
+import Link from "../components/Link";
 
 const SigninScreen = ({ navigation }) => {
+  const [login, setLogin] = useState("");
+  const [password, setPassword] = useState("");
+  const { state, signin } = useContext(AuthContext);
+
+  console.log(state);
   return (
     <View style={styles.container}>
       <Spacer>
         <Text h3>Sign In</Text>
       </Spacer>
       <Input
-        label="Username"
+        label="Login"
         leftIcon={<AntDesign name="user" size={24} color="grey" />}
-        placeholder="Username"
+        placeholder="Email or Username"
         autoCorrect={false}
         autoCapitalize="none"
+        value={login}
+        onChangeText={setLogin}
       />
       <Input
         label="Password"
@@ -27,17 +35,19 @@ const SigninScreen = ({ navigation }) => {
         autoCapitalize="none"
         autoCorrect={false}
         secureTextEntry
+        value={password}
+        onChangeText={setPassword}
       />
       <Spacer>
-        <Button title="Sign In" onPress={() => navigation.navigate("main")} />
+        <Button
+          title="Sign In"
+          onPress={() => signin({ email: login, password })}
+        />
       </Spacer>
-      <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
-        <Spacer>
-          <Text style={styles.link}>
-            Don't have an account? Go back to a Sign Up page.
-          </Text>
-        </Spacer>
-      </TouchableOpacity>
+      <Link
+        title="Don't have an account? Go back to a Sign Up page."
+        callback={() => navigation.navigate("Signup")}
+      />
     </View>
   );
 };
@@ -47,9 +57,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     marginBottom: 300,
-  },
-  link: {
-    color: "blue",
   },
 });
 

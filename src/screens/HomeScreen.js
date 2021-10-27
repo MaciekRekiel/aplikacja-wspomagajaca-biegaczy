@@ -1,11 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { Text, Avatar, Button } from "react-native-elements";
 import Card from "../components/Card";
 
+import { Context as AuthContext } from "../context/AuthContext";
 import Spacer from "../components/Spacer";
 
 const HomeScreen = ({ navigation }) => {
+  const { state, signout } = useContext(AuthContext);
+
+  console.log(state);
+
   const data = [
     { title: "Title 1", subtitle: "Subtitle 1" },
     { title: "Title 2", subtitle: "Subtitle 2" },
@@ -33,7 +38,7 @@ const HomeScreen = ({ navigation }) => {
               type="outline"
               buttonStyle={{ paddingHorizontal: 20 }}
               title="Sign out"
-              onPress={() => navigation.navigate("Signin")}
+              onPress={signout}
             />
           </View>
           <Card title="Twoje Nadchodzące Eventy..." data={data} />

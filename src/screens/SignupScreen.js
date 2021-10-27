@@ -1,14 +1,22 @@
-import React from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState, useContext } from "react";
+import { View, StyleSheet } from "react-native";
 import { Input, Text, Button } from "react-native-elements";
-
 import { MaterialIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 
+import { Context as AuthContext } from "../context/AuthContext";
 import Spacer from "../components/Spacer";
+import Link from "../components/Link";
 
 const SignupScreen = ({ navigation }) => {
+  const [login, setLogin] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const { signup } = useContext(AuthContext);
+
   return (
     <View style={styles.container}>
       <Spacer>
@@ -20,6 +28,8 @@ const SignupScreen = ({ navigation }) => {
         placeholder="Username"
         autoCorrect={false}
         autoCapitalize="none"
+        value={login}
+        onChangeText={setLogin}
       />
       <Input
         label="Email"
@@ -27,6 +37,8 @@ const SignupScreen = ({ navigation }) => {
         placeholder="email@address.com"
         autoCorrect={false}
         autoCapitalize="none"
+        value={email}
+        onChangeText={setEmail}
       />
       <Input
         label="Password"
@@ -35,6 +47,8 @@ const SignupScreen = ({ navigation }) => {
         autoCapitalize="none"
         autoCorrect={false}
         secureTextEntry
+        value={password}
+        onChangeText={setPassword}
       />
       <Input
         label="Confirm Password"
@@ -43,17 +57,19 @@ const SignupScreen = ({ navigation }) => {
         autoCapitalize="none"
         autoCorrect={false}
         secureTextEntry
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
       />
       <Spacer>
-        <Button title="Sign Up" />
+        <Button
+          title="Sign Up"
+          onPress={() => signup({ login, email, password, confirmPassword })}
+        />
       </Spacer>
-      <TouchableOpacity onPress={() => navigation.navigate("Signin")}>
-        <Spacer>
-          <Text style={styles.link}>
-            Already have an account? Try to sign in!
-          </Text>
-        </Spacer>
-      </TouchableOpacity>
+      <Link
+        title="Already have an account? Try to sign in!"
+        callback={() => navigation.navigate("Signin")}
+      />
     </View>
   );
 };
@@ -69,9 +85,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     marginBottom: 100,
-  },
-  link: {
-    color: "blue",
   },
 });
 
