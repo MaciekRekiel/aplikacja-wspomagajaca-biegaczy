@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
+import { NavigationEvents } from "react-navigation";
 import { Input, Text, Button } from "react-native-elements";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
@@ -20,6 +21,7 @@ const SignupScreen = ({ navigation }) => {
   const {
     state: { errorMessages },
     signup,
+    clearErrors,
   } = useContext(AuthContext);
 
   useEffect(() => {
@@ -27,13 +29,12 @@ const SignupScreen = ({ navigation }) => {
     for (let err in errorMessages) {
       errorsObj[err] = errorMessages[err];
     }
-    if (!_.isEmpty(errorsObj)) {
-      setErrors(errorsObj);
-    }
+    setErrors(errorsObj);
   }, [errorMessages]);
 
   return (
     <View style={styles.container}>
+      <NavigationEvents onWillFocus={clearErrors} />
       <Spacer>
         <Text h3>Sign Up</Text>
       </Spacer>
@@ -45,7 +46,7 @@ const SignupScreen = ({ navigation }) => {
         autoCapitalize="none"
         value={login}
         onChangeText={setLogin}
-        errorMessage={errors.loginIsEmpty}
+        errorMessage={errors.loginIsEmpty || errors.loginExists}
       />
       <Input
         label="Email"
@@ -55,7 +56,9 @@ const SignupScreen = ({ navigation }) => {
         autoCapitalize="none"
         value={email}
         onChangeText={setEmail}
-        errorMessage={errors.emailIsEmpty}
+        errorMessage={
+          errors.emailIsEmpty || errors.emailExists || errors.emailInvalid
+        }
       />
       <Input
         label="Password"
@@ -66,7 +69,7 @@ const SignupScreen = ({ navigation }) => {
         secureTextEntry
         value={password}
         onChangeText={setPassword}
-        errorMessage={errors.passwordIsEmpty}
+        errorMessage={errors.passwordIsEmpty || errors.passTooShort}
       />
       <Input
         label="Confirm Password"
@@ -77,7 +80,7 @@ const SignupScreen = ({ navigation }) => {
         secureTextEntry
         value={confirmPassword}
         onChangeText={setConfirmPassword}
-        errorMessage={errors.confirmPasswordIsEmpty}
+        errorMessage={errors.confirmPasswordIsEmpty || errors.passDontMatch}
       />
       <Spacer>
         <Button

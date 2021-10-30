@@ -19,6 +19,8 @@ const HomeScreen = ({ navigation }) => {
     { title: "Title 7", subtitle: "Subtitle 7" },
   ];
 
+  console.log(state);
+
   return (
     <ScrollView>
       <View style={styles.container}>

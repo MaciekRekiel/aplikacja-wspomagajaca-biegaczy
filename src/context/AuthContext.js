@@ -8,6 +8,7 @@ import { navigate } from "../navigationRef";
 const SIGNIN = "SIGNIN";
 const SIGNOUT = "SIGNOUT";
 const ADD_ERROR = "ADD_ERROR";
+const CLEAR_ERROR = "CLEAR_ERROR";
 
 const authReducer = (state, action) => {
   switch (action.type) {
@@ -21,17 +22,32 @@ const authReducer = (state, action) => {
       return { user: null, token: null, errorMessages: {} };
     case ADD_ERROR:
       return { ...state, errorMessages: { ...action.payload } };
+    case CLEAR_ERROR:
+      return { ...state, errorMessages: {} };
     default:
       return state;
   }
 };
 
+const clearErrors = (dispatch) => {
+  return () => {
+    dispatch({
+      type: CLEAR_ERROR,
+    });
+  };
+};
+
 const signup = (dispatch) => {
-  return async ({ login, email, password, confirmPassword }) => {
+  return async ({
+    login = "",
+    email = "",
+    password = "",
+    confirmPassword = "",
+  }) => {
     const errorMessages = {};
 
     login = login.trim();
-    email = email.trim();
+    email = email.trim().toLowerCase();
     password = password.trim();
     confirmPassword = confirmPassword.trim();
     if (!login) {
@@ -50,7 +66,6 @@ const signup = (dispatch) => {
     // If there is no errors, try to make request
     if (_.isEmpty(errorMessages)) {
       try {
-        // Creating a new user
         const response = await serverInstance.post("/users", {
           login,
           email,
@@ -62,20 +77,22 @@ const signup = (dispatch) => {
         await AsyncStorage.setItem("token", response.data.token);
 
         // Fetching and saving all data about the user
-        const responseUser = await serverInstance.post("/users/me", {
+        const responseUser = await serverInstance.get("/users/me", {
           headers: {
             Authorization: `Bearer ${response.data.token}`,
           },
         });
+
         dispatch({
           type: SIGNIN,
           payload: { token: response.data.token, user: responseUser.data.user },
         });
         navigate("Home");
-      } catch (err) {
+      } catch (error) {
+        // Server Validation Errors
         dispatch({
           type: ADD_ERROR,
-          payload: "Something went wrong with sign up",
+          payload: error.response.data.errorMessages,
         });
       }
     } else {
@@ -89,32 +106,56 @@ const signup = (dispatch) => {
 };
 
 const signin = (dispatch) => {
-  return async ({ email, password }) => {
-    try {
-      // Trying to log in
-      const response = await serverInstance.post("/users/login", {
-        email,
-        password,
-      });
+  return async ({ login = "", password = "" }) => {
+    const errorMessages = {};
 
-      // Saving auth token
-      await AsyncStorage.setItem("token", response.data.token);
+    login = login.trim();
+    password = password.trim();
 
-      // Fetching and saving all data about the user
-      const responseUser = await serverInstance.get("/users/me", {
-        headers: {
-          Authorization: `Bearer ${response.data.token}`,
-        },
-      });
-      dispatch({
-        type: SIGNIN,
-        payload: { token: response.data.token, user: responseUser.data.user },
-      });
-      navigate("Home");
-    } catch (err) {
+    if (!login) {
+      errorMessages.loginIsEmpty = "You must enter your username or email";
+    }
+    if (!password) {
+      errorMessages.passwordIsEmpty = "You must enter a password";
+    }
+
+    // Check if provided login is email
+    login.includes("@") ? (login = login.toLowerCase()) : null;
+
+    if (_.isEmpty(errorMessages)) {
+      try {
+        // Trying to log in
+        const response = await serverInstance.post("/users/login", {
+          login,
+          password,
+        });
+
+        // Savin auth token
+        await AsyncStorage.setItem("token", response.data.token);
+
+        // Fetching and saving all data about the user
+        const responseUser = await serverInstance.get("/users/me", {
+          headers: {
+            Authorization: `Bearer ${response.data.token}`,
+          },
+        });
+        dispatch({
+          type: SIGNIN,
+          payload: { token: response.data.token, user: responseUser.data.user },
+        });
+        navigate("Home");
+      } catch (error) {
+        // Server Validation Errors
+        dispatch({
+          type: ADD_ERROR,
+          payload: error.response.data.errorMessages,
+        });
+      }
+    } else {
+      // At least one error occurred
       dispatch({
         type: ADD_ERROR,
-        payload: err.error,
+        payload: errorMessages,
       });
     }
   };
@@ -132,6 +173,6 @@ const signout = (dispatch) => {
 };
 export const { Provider, Context } = createDataContext(
   authReducer,
-  { signup, signin, signout },
+  { signup, signin, signout, clearErrors },
   { user: null, token: null, errorMessages: {} }
 );

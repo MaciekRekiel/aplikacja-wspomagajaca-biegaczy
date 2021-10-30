@@ -1,6 +1,8 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { View, StyleSheet } from "react-native";
+import { NavigationEvents } from "react-navigation";
 import { Input, Text, Button } from "react-native-elements";
+import _ from "lodash";
 import { AntDesign } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 
@@ -11,10 +13,24 @@ import Link from "../components/Link";
 const SigninScreen = ({ navigation }) => {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
-  const { state, signin } = useContext(AuthContext);
+  const [errors, setErrors] = useState({});
+  const {
+    state: { errorMessages },
+    signin,
+    clearErrors,
+  } = useContext(AuthContext);
+
+  useEffect(() => {
+    const errorsObj = {};
+    for (let err in errorMessages) {
+      errorsObj[err] = errorMessages[err];
+    }
+    setErrors(errorsObj);
+  }, [errorMessages]);
 
   return (
     <View style={styles.container}>
+      <NavigationEvents onWillFocus={clearErrors} />
       <Spacer>
         <Text h3>Sign In</Text>
       </Spacer>
@@ -26,6 +42,7 @@ const SigninScreen = ({ navigation }) => {
         autoCapitalize="none"
         value={login}
         onChangeText={setLogin}
+        errorMessage={errors.loginIsEmpty || errors.loginInvalid}
       />
       <Input
         label="Password"
@@ -36,12 +53,10 @@ const SigninScreen = ({ navigation }) => {
         secureTextEntry
         value={password}
         onChangeText={setPassword}
+        errorMessage={errors.passwordIsEmpty || errors.passwordInvalid}
       />
       <Spacer>
-        <Button
-          title="Sign In"
-          onPress={() => signin({ email: login, password })}
-        />
+        <Button title="Sign In" onPress={() => signin({ login, password })} />
       </Spacer>
       <Link
         title="Don't have an account? Go back to a Sign Up page."
