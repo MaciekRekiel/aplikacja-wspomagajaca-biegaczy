@@ -1,13 +1,15 @@
-import React, { useState, useContext, useEffect } from "react";
+// REACT REACT-NATIVE IMPORTS
+import React, { useState, useContext } from "react";
 import { View, StyleSheet } from "react-native";
 import { NavigationEvents } from "react-navigation";
 import { Input, Text, Button } from "react-native-elements";
+// ICONS IMPORTS
 import { MaterialIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-import _ from "lodash";
-
+// REUSABLE COMPONENTS IMPORTS
 import { Context as AuthContext } from "../context/AuthContext";
+import { useError } from "../hooks/useError";
 import Spacer from "../components/Spacer";
 import Link from "../components/Link";
 
@@ -16,21 +18,8 @@ const SignupScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [errors, setErrors] = useState({});
-
-  const {
-    state: { errorMessages },
-    signup,
-    clearErrors,
-  } = useContext(AuthContext);
-
-  useEffect(() => {
-    const errorsObj = {};
-    for (let err in errorMessages) {
-      errorsObj[err] = errorMessages[err];
-    }
-    setErrors(errorsObj);
-  }, [errorMessages]);
+  const [errors] = useError();
+  const { signup, clearErrors } = useContext(AuthContext);
 
   return (
     <View style={styles.container}>
