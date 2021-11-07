@@ -29,6 +29,33 @@ const authReducer = (state, action) => {
   }
 };
 
+const autoLogin = (dispatch) => {
+  return async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (token) {
+        const responseUser = await serverInstance.get("/users/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        dispatch({
+          type: SIGNIN,
+          payload: { token, user: responseUser.data.user },
+        });
+        navigate("Home");
+      } else {
+        navigate("Signup");
+      }
+    } catch (error) {
+      dispatch({
+        type: SIGNOUT,
+      });
+      navigate("Signup");
+    }
+  };
+};
+
 const clearErrors = (dispatch) => {
   return () => {
     dispatch({
@@ -173,6 +200,6 @@ const signout = (dispatch) => {
 };
 export const { Provider, Context } = createDataContext(
   authReducer,
-  { signup, signin, signout, clearErrors },
+  { signup, signin, signout, clearErrors, autoLogin },
   { user: null, token: null, errorMessages: {} }
 );

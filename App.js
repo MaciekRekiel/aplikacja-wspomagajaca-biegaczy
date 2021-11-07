@@ -6,6 +6,7 @@ import { Entypo } from "@expo/vector-icons";
 
 import { setNavigator } from "./src/navigationRef";
 import { Provider as AuthProvider } from "./src/context/AuthContext";
+import { Provider as LocationProvider } from "./src/context/LocationContext";
 
 import SigninScreen from "./src/screens/SigninScreen";
 import SignupScreen from "./src/screens/SignupScreen";
@@ -14,6 +15,7 @@ import ProfileScreen from "./src/screens/ProfileScreen";
 import StatsScreen from "./src/screens/StatsScreen";
 import EventsScreen from "./src/screens/EventsScreen";
 import RunningScreen from "./src/screens/RunningScreen";
+import AuthResolveScreen from "./src/screens/AuthResolveScreen";
 
 const Home = createStackNavigator({
   Home: HomeScreen,
@@ -28,6 +30,7 @@ Home.navigationOptions = {
 };
 
 const switchNavigator = createSwitchNavigator({
+  authResolve: AuthResolveScreen,
   auth: createStackNavigator({
     Signup: SignupScreen,
     Signin: SigninScreen,
@@ -44,8 +47,10 @@ const App = createAppContainer(switchNavigator);
 
 export default () => {
   return (
-    <AuthProvider>
-      <App ref={(navigator) => setNavigator(navigator)} />
-    </AuthProvider>
+    <LocationProvider>
+      <AuthProvider>
+        <App ref={(navigator) => setNavigator(navigator)} />
+      </AuthProvider>
+    </LocationProvider>
   );
 };

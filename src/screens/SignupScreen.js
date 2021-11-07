@@ -1,5 +1,5 @@
 // REACT REACT-NATIVE IMPORTS
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { View, StyleSheet } from "react-native";
 import { NavigationEvents } from "react-navigation";
 import { Input, Text, Button } from "react-native-elements";

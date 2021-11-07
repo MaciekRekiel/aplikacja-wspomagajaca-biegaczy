@@ -1,25 +1,50 @@
-import React, { useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { Avatar, Button } from "react-native-elements";
-import Card from "../components/Card";
+import * as TaskManager from "expo-task-manager";
+import * as BackgroundFetch from "expo-background-fetch";
+import {
+  requestForegroundPermissionsAsync,
+  requestBackgroundPermissionsAsync,
+  getCurrentPositionAsync,
+  Accuracy,
+} from "expo-location";
 
 import { Context as AuthContext } from "../context/AuthContext";
+import { Context as LocationContext } from "../context/LocationContext";
 import Spacer from "../components/Spacer";
+import Card from "../components/Card";
 
 const HomeScreen = ({ navigation }) => {
   const { state, signout } = useContext(AuthContext);
+  const {
+    state: { currentLocation, permissions },
+    grantPermissions,
+    rejectPermissions,
+    addLocation,
+  } = useContext(LocationContext);
 
-  const data = [
-    { title: "Title 1", subtitle: "Subtitle 1" },
-    { title: "Title 2", subtitle: "Subtitle 2" },
-    { title: "Title 3", subtitle: "Subtitle 3" },
-    { title: "Title 4", subtitle: "Subtitle 4" },
-    { title: "Title 5", subtitle: "Subtitle 5" },
-    { title: "Title 6", subtitle: "Subtitle 6" },
-    { title: "Title 7", subtitle: "Subtitle 7" },
-  ];
+  useEffect(() => {
+    const getPermissions = async () => {
+      try {
+        const { granted: foregroundGranted } =
+          await requestForegroundPermissionsAsync();
+        if (!foregroundGranted) {
+          rejectPermissions();
+          throw new Error("Location permission not granted");
+        }
+        const location = await getCurrentPositionAsync({
+          accuracy: Accuracy.BestForNavigation,
+        });
+        addLocation(location);
+        grantPermissions();
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-  console.log(state);
+    getPermissions();
+  }, []);
 
   return (
     <ScrollView>
@@ -41,7 +66,7 @@ const HomeScreen = ({ navigation }) => {
               onPress={signout}
             />
           </View>
-          <Card title="Twoje Nadchodzące Eventy..." data={data} />
+          <Card title="Twoje Nadchodzące Eventy..." data={[]} />
         </View>
         <Spacer>
           <Button

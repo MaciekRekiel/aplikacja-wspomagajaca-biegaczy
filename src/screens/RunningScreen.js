@@ -1,20 +1,105 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { View, StyleSheet } from "react-native";
 import { Button } from "react-native-elements";
-import MapView, { Circle } from "react-native-maps";
+import * as TaskManager from "expo-task-manager";
+import {
+  Accuracy,
+  requestForegroundPermissionsAsync,
+  requestBackgroundPermissionsAsync,
+  stopLocationUpdatesAsync,
+  startLocationUpdatesAsync,
+  watchPositionAsync,
+} from "expo-location";
 
 import Spacer from "../components/Spacer";
 import Column from "../components/Column";
+import Map from "../components/Map";
+import { Context as LocationContext } from "../context/LocationContext";
 
 const RunningScreen = () => {
-  const [start, setStart] = useState(false);
+  const { state, addLocation, startRunning, stopRunning } =
+    useContext(LocationContext);
+  const [loc, setLoc] = useState(null);
+  // Memorize the callback -> changes everytime running flag changes
+  // const callback = useCallback(
+  //   (location) => {
+  //     addLocation(location, state.running);
+  //   },
+  //   [state.running]
+  // );
 
-  const initalRegion = {
-    latitude: 51.23612,
-    longitude: 22.5489,
-    longitudeDelta: 0.005,
-    latitudeDelta: 0.005,
+  TaskManager.defineTask("TASK_FETCH_LOCATION", async ({ data, error }) => {
+    if (error) {
+      console.log(error.message);
+      return;
+    }
+    if (data) {
+      const { locations } = data;
+      const { latitude, longitude } = locations[0].coords;
+      console.log(`Lat: ${latitude}\tLon: ${longitude}`);
+      console.log(loc);
+      setLoc(locations[0]);
+    }
+  });
+
+  const startTrackingLocation = async () => {
+    await startLocationUpdatesAsync("TASK_FETCH_LOCATION", {
+      accuracy: Accuracy.BestForNavigation,
+      timeInterval: 1000,
+      distanceInterval: 5,
+      foregroundService: {
+        notificationTitle: "Using your location",
+        notificationBody:
+          "To turn off, go back to the app and switch stop navigating.",
+      },
+    });
+    startRunning();
   };
+
+  const stopTrackingLocation = async () => {
+    await stopLocationUpdatesAsync("TASK_FETCH_LOCATION");
+    stopRunning();
+  };
+
+  useEffect(() => {
+    if (loc) {
+      addLocation(loc, state.running);
+    }
+  }, [loc]);
+
+  // useEffect(() => {
+  //   let subscriber;
+
+  //   const startWatching = async () => {
+  //     try {
+  //       subscriber = await watchPositionAsync(
+  //         {
+  //           accuracy: Accuracy.BestForNavigation,
+  //           timeInterval: 1000,
+  //           distanceInterval: 5,
+  //         },
+  //         callback
+  //       );
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+
+  //   if (state.running) {
+  //     startWatching();
+  //   } else {
+  //     if (subscriber) {
+  //       subscriber.remove();
+  //       subscriber = null;
+  //     }
+  //   }
+  //   return () => {
+  //     if (subscriber) {
+  //       subscriber.remove();
+  //       subscriber = null;
+  //     }
+  //   };
+  // }, [state.running, callback]);
 
   return (
     <View style={styles.container}>
@@ -25,21 +110,13 @@ const RunningScreen = () => {
           <Column title="Kcal" value={0} />
         </View>
       </Spacer>
+      <Map />
       <Spacer>
-        <MapView style={styles.map} initialRegion={initalRegion}>
-          <Circle
-            center={{ latitude: 51.23612, longitude: 22.5489 }}
-            radius={15}
-            strokeColor="rgba(73, 151, 253, 1)"
-            fillColor="rgba(73, 151, 253, 0.3)"
-          />
-        </MapView>
-      </Spacer>
-      <Spacer>
-        <Button
-          title={start ? "Stop" : "Start"}
-          onPress={() => setStart(!start)}
-        />
+        {state.running ? (
+          <Button title="Stop" onPress={stopTrackingLocation} />
+        ) : (
+          <Button title="Start" onPress={startTrackingLocation} />
+        )}
       </Spacer>
     </View>
   );
@@ -66,9 +143,54 @@ const styles = StyleSheet.create({
     elevation: 5,
     height: 100,
   },
-  map: {
-    height: 300,
-  },
 });
 
 export default RunningScreen;
+
+/*
+
+ useEffect(() => {
+    let subscriber;
+    const startWatching = async () => {
+      try {
+        const { granted: foregroundGranted } =
+          await requestForegroundPermissionsAsync();
+        if (!foregroundGranted) {
+          throw new Error("Location permission not granted");
+        }
+        const { granted: backgroundGranted } =
+          await requestBackgroundPermissionsAsync();
+        if (!backgroundGranted) {
+          throw new Error("Background permission not granted");
+        }
+
+        subscriber = await watchPositionAsync(
+          {
+            accuracy: Accuracy.BestForNavigation,
+            timeInterval: 1000,
+            distanceInterval: 5,
+          },
+          callback
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    if (state.running) {
+      startWatching();
+    } else {
+      if (subscriber) {
+        subscriber.remove();
+        subscriber = null;
+      }
+    }
+    return () => {
+      if (subscriber) {
+        subscriber.remove();
+        subscriber = null;
+      }
+    };
+  }, [state.running, callback]);
+
+*/
