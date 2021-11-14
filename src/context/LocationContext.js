@@ -1,9 +1,12 @@
 import createDataContext from "./createDataContext";
+import { calculateDistance } from "../utils/calculateDistance";
 
 const ADD_CURRENT_LOCATION = "ADD_CURRENT_LOCATION";
 const ADD_LOCATION = "ADD_LOCATION";
 const START_RUNNING = "START_RUNNING";
+const START_STOPER = "START_STOPER";
 const STOP_RUNNING = "STOP_RUNNING";
+const SET_DISTANCE = "SET_DISTANCE";
 const GRANT_PERMISSIONS = "GRANT_PERMISSIONS";
 const REJECT_PERMISSIONS = "REJECT_PERMISSIONS";
 
@@ -15,8 +18,24 @@ const locationReducer = (state, action) => {
       return { ...state, locations: [...state.locations, action.payload] };
     case START_RUNNING:
       return { ...state, running: true };
+    case START_STOPER:
+      return { ...state, runningTime: state.runningTime + 1 };
     case STOP_RUNNING:
       return { ...state, running: false };
+    case SET_DISTANCE:
+      const length = state.locations.length;
+      if (length > 1) {
+        const { locations } = state;
+        const {
+          coords: { latitude: lat1, longitude: lon1 },
+        } = locations[length - 1];
+        const {
+          coords: { latitude: lat2, longitude: lon2 },
+        } = locations[length - 2];
+        const additionalDistance = calculateDistance(lat1, lon1, lat2, lon2);
+        return { ...state, distance: state.distance + additionalDistance };
+      }
+      return { ...state };
     case GRANT_PERMISSIONS:
       return { ...state, permissions: true };
     case REJECT_PERMISSIONS:
@@ -26,6 +45,13 @@ const locationReducer = (state, action) => {
   }
 };
 
+const startStoper = (dispatch) => {
+  return () => {
+    dispatch({
+      type: START_STOPER,
+    });
+  };
+};
 const grantPermissions = (dispatch) => {
   return () => {
     dispatch({
@@ -63,16 +89,22 @@ const addLocation = (dispatch) => {
       payload: location,
     });
 
-    console.log(
-      "Added Location lat: ",
-      location.coords.latitude,
-      "\tlong: ",
-      location.coords.longitude
-    );
+    // console.log(
+    //   "Added Location lat: ",
+    //   location.coords.latitude,
+    //   "\tlong: ",
+    //   location.coords.longitude
+    // );
 
     if (running) {
+      // TO UPDATE LOCATIONS
       dispatch({
         type: ADD_LOCATION,
+        payload: location,
+      });
+      // TO UPDATE DISTANCE
+      dispatch({
+        type: SET_DISTANCE,
         payload: location,
       });
     }
@@ -82,11 +114,19 @@ const addLocation = (dispatch) => {
 export const { Provider, Context } = createDataContext(
   locationReducer,
   {
+    startStoper,
     addLocation,
     startRunning,
     stopRunning,
     grantPermissions,
     rejectPermissions,
   },
-  { permissions: null, running: false, locations: [], currentLocation: null }
+  {
+    permissions: null,
+    running: false,
+    locations: [],
+    currentLocation: null,
+    runningTime: 0,
+    distance: 0,
+  }
 );

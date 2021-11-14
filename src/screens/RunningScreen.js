@@ -1,33 +1,30 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+// REACT REACT-NATIVE IMPORTS
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { View, StyleSheet } from "react-native";
 import { Button } from "react-native-elements";
+import { NavigationEvents } from "react-navigation";
 import * as TaskManager from "expo-task-manager";
 import {
   Accuracy,
-  requestForegroundPermissionsAsync,
-  requestBackgroundPermissionsAsync,
   stopLocationUpdatesAsync,
   startLocationUpdatesAsync,
+  getCurrentPositionAsync,
   watchPositionAsync,
 } from "expo-location";
 
+// REUSABLE COMPONENTS IMPORT
 import Spacer from "../components/Spacer";
 import Column from "../components/Column";
 import Map from "../components/Map";
+import Stoper from "../components/Stoper";
 import { Context as LocationContext } from "../context/LocationContext";
 
 const RunningScreen = () => {
-  const { state, addLocation, startRunning, stopRunning } =
+  const { state, addLocation, startRunning, stopRunning, startStoper } =
     useContext(LocationContext);
   const [loc, setLoc] = useState(null);
-  // Memorize the callback -> changes everytime running flag changes
-  // const callback = useCallback(
-  //   (location) => {
-  //     addLocation(location, state.running);
-  //   },
-  //   [state.running]
-  // );
 
+  // BACKGROUND TASK
   TaskManager.defineTask("TASK_FETCH_LOCATION", async ({ data, error }) => {
     if (error) {
       console.log(error.message);
@@ -35,18 +32,37 @@ const RunningScreen = () => {
     }
     if (data) {
       const { locations } = data;
-      const { latitude, longitude } = locations[0].coords;
-      console.log(`Lat: ${latitude}\tLon: ${longitude}`);
-      console.log(loc);
       setLoc(locations[0]);
     }
   });
 
+  // ON COMPONENT RENDER LOCATION FETCHING
+  const initialLocation = async () => {
+    const location = await getCurrentPositionAsync({
+      accuracy: Accuracy.BestForNavigation,
+    });
+    addLocation(location);
+  };
+
+  // ICON LOCATION FETCHING
+  const getUserLocation = async () => {
+    const subscriber = await watchPositionAsync(
+      {
+        accuracy: Accuracy.BestForNavigation,
+      },
+      (location) => addLocation(location)
+    );
+    setTimeout(() => {
+      subscriber.remove();
+    }, 1000);
+  };
+
+  // BACKGROUND AND FOREGROUND TRACKING
   const startTrackingLocation = async () => {
     await startLocationUpdatesAsync("TASK_FETCH_LOCATION", {
       accuracy: Accuracy.BestForNavigation,
       timeInterval: 1000,
-      distanceInterval: 5,
+      distanceInterval: 2,
       foregroundService: {
         notificationTitle: "Using your location",
         notificationBody:
@@ -56,67 +72,55 @@ const RunningScreen = () => {
     startRunning();
   };
 
+  // STOP TRACKING LOCATION
   const stopTrackingLocation = async () => {
     await stopLocationUpdatesAsync("TASK_FETCH_LOCATION");
     stopRunning();
   };
 
+  // TIME RENDER HELPER FUNCTION
+  const renderTime = () => {
+    // XX:XX TIME OUTPUT
+    const { runningTime } = state;
+    let secValue = runningTime % 60;
+    let minValue = Math.floor(runningTime / 60);
+    minValue < 10 ? (minValue = `0${minValue}`) : null;
+    secValue < 10 ? (secValue = `0${secValue}`) : null;
+    return `${minValue}:${secValue}`;
+  };
+
+  // SAVE LOCATION TO THE CONTEXT EVERYTIME LOCATION STATE CHANGES
   useEffect(() => {
     if (loc) {
       addLocation(loc, state.running);
     }
   }, [loc]);
 
-  // useEffect(() => {
-  //   let subscriber;
-
-  //   const startWatching = async () => {
-  //     try {
-  //       subscriber = await watchPositionAsync(
-  //         {
-  //           accuracy: Accuracy.BestForNavigation,
-  //           timeInterval: 1000,
-  //           distanceInterval: 5,
-  //         },
-  //         callback
-  //       );
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-
-  //   if (state.running) {
-  //     startWatching();
-  //   } else {
-  //     if (subscriber) {
-  //       subscriber.remove();
-  //       subscriber = null;
-  //     }
-  //   }
-  //   return () => {
-  //     if (subscriber) {
-  //       subscriber.remove();
-  //       subscriber = null;
-  //     }
-  //   };
-  // }, [state.running, callback]);
-
   return (
     <View style={styles.container}>
+      <NavigationEvents onWillFocus={initialLocation} />
+      {state.running ? <Stoper interval={1000} callback={startStoper} /> : null}
       <Spacer>
         <View style={styles.card}>
-          <Column title="KM" value={0} />
-          <Column title="Czas" value={0} />
+          <Column title="KM" value={state.distance} />
+          <Column title="Czas" value={renderTime()} />
           <Column title="Kcal" value={0} />
         </View>
       </Spacer>
-      <Map />
+      <Map onIconPress={getUserLocation} />
       <Spacer>
         {state.running ? (
           <Button title="Stop" onPress={stopTrackingLocation} />
         ) : (
           <Button title="Start" onPress={startTrackingLocation} />
         )}
+        <Spacer></Spacer>
+        {state.runningTime > 0 && !state.running ? (
+          <Button
+            title="Save The Session"
+            onPress={() => console.log("Zapisuje")}
+          />
+        ) : null}
       </Spacer>
     </View>
   );
@@ -146,51 +150,3 @@ const styles = StyleSheet.create({
 });
 
 export default RunningScreen;
-
-/*
-
- useEffect(() => {
-    let subscriber;
-    const startWatching = async () => {
-      try {
-        const { granted: foregroundGranted } =
-          await requestForegroundPermissionsAsync();
-        if (!foregroundGranted) {
-          throw new Error("Location permission not granted");
-        }
-        const { granted: backgroundGranted } =
-          await requestBackgroundPermissionsAsync();
-        if (!backgroundGranted) {
-          throw new Error("Background permission not granted");
-        }
-
-        subscriber = await watchPositionAsync(
-          {
-            accuracy: Accuracy.BestForNavigation,
-            timeInterval: 1000,
-            distanceInterval: 5,
-          },
-          callback
-        );
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    if (state.running) {
-      startWatching();
-    } else {
-      if (subscriber) {
-        subscriber.remove();
-        subscriber = null;
-      }
-    }
-    return () => {
-      if (subscriber) {
-        subscriber.remove();
-        subscriber = null;
-      }
-    };
-  }, [state.running, callback]);
-
-*/

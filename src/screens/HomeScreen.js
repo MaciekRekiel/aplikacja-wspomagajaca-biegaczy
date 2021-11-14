@@ -1,14 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { Avatar, Button } from "react-native-elements";
-import * as TaskManager from "expo-task-manager";
-import * as BackgroundFetch from "expo-background-fetch";
-import {
-  requestForegroundPermissionsAsync,
-  requestBackgroundPermissionsAsync,
-  getCurrentPositionAsync,
-  Accuracy,
-} from "expo-location";
+import { requestForegroundPermissionsAsync } from "expo-location";
 
 import { Context as AuthContext } from "../context/AuthContext";
 import { Context as LocationContext } from "../context/LocationContext";
@@ -18,31 +11,26 @@ import Card from "../components/Card";
 const HomeScreen = ({ navigation }) => {
   const { state, signout } = useContext(AuthContext);
   const {
-    state: { currentLocation, permissions },
+    state: { permissions },
     grantPermissions,
     rejectPermissions,
-    addLocation,
   } = useContext(LocationContext);
 
-  useEffect(() => {
-    const getPermissions = async () => {
-      try {
-        const { granted: foregroundGranted } =
-          await requestForegroundPermissionsAsync();
-        if (!foregroundGranted) {
-          rejectPermissions();
-          throw new Error("Location permission not granted");
-        }
-        const location = await getCurrentPositionAsync({
-          accuracy: Accuracy.BestForNavigation,
-        });
-        addLocation(location);
-        grantPermissions();
-      } catch (error) {
-        console.log(error);
+  const getPermissions = async () => {
+    try {
+      const { granted } = await requestForegroundPermissionsAsync();
+      if (!granted) {
+        rejectPermissions();
+        throw new Error("Location permission not granted");
       }
-    };
+      grantPermissions();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
+  // INITIAL PERMISSION REQUEST
+  useEffect(() => {
     getPermissions();
   }, []);
 
@@ -69,10 +57,14 @@ const HomeScreen = ({ navigation }) => {
           <Card title="Twoje Nadchodzące Eventy..." data={[]} />
         </View>
         <Spacer>
-          <Button
-            title="Rozpocznij Bieg"
-            onPress={() => navigation.navigate("Running")}
-          />
+          {permissions ? (
+            <Button
+              title="Start Running"
+              onPress={() => navigation.navigate("Running")}
+            />
+          ) : (
+            <Button title="Request Permissions" onPress={getPermissions} />
+          )}
         </Spacer>
       </View>
     </ScrollView>

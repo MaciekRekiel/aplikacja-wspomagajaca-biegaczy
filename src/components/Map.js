@@ -1,11 +1,13 @@
-import React, { useState, useContext } from "react";
-import { ActivityIndicator, StyleSheet } from "react-native";
+import React, { useContext } from "react";
+import { View, ActivityIndicator, StyleSheet } from "react-native";
 import MapView, { Circle, Polyline } from "react-native-maps";
+import { Icon } from "react-native-elements";
+import { FontAwesome } from "@expo/vector-icons";
 
 import Spacer from "./Spacer";
 import { Context as LocationContext } from "../context/LocationContext";
 
-const Map = () => {
+const Map = ({ onIconPress }) => {
   const {
     state: { currentLocation, locations },
   } = useContext(LocationContext);
@@ -20,13 +22,28 @@ const Map = () => {
 
   return (
     <Spacer>
+      <View style={styles.icon}>
+        <Icon
+          reverse
+          name="map-marker"
+          type="font-awesome"
+          color="rgba(73, 151, 253, 1)"
+          onPress={onIconPress}
+        />
+      </View>
       <MapView
         style={styles.map}
         initialRegion={{
           ...currentLocation.coords,
-          latitudeDelta: 0.001,
-          longitudeDelta: 0.001,
+          latitudeDelta: 0.002,
+          longitudeDelta: 0.002,
         }}
+        region={{
+          ...currentLocation.coords,
+          latitudeDelta: 0.002,
+          longitudeDelta: 0.002,
+        }}
+        onPress={() => console.log("HA")}
       >
         <Circle
           center={currentLocation.coords}
@@ -52,7 +69,14 @@ const Map = () => {
 
 const styles = StyleSheet.create({
   map: {
+    position: "relative",
     height: 300,
+  },
+  icon: {
+    position: "absolute",
+    top: 12,
+    right: 12,
+    zIndex: 10,
   },
 });
 

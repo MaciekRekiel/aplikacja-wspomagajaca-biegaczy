@@ -1,13 +1,18 @@
+// REACT
 import React from "react";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { createBottomTabNavigator } from "react-navigation-tabs";
+
+// ICONS
 import { Entypo } from "@expo/vector-icons";
 
+// UTILS
 import { setNavigator } from "./src/navigationRef";
 import { Provider as AuthProvider } from "./src/context/AuthContext";
 import { Provider as LocationProvider } from "./src/context/LocationContext";
 
+// SCREENS IMPORT
 import SigninScreen from "./src/screens/SigninScreen";
 import SignupScreen from "./src/screens/SignupScreen";
 import HomeScreen from "./src/screens/HomeScreen";
@@ -17,11 +22,11 @@ import EventsScreen from "./src/screens/EventsScreen";
 import RunningScreen from "./src/screens/RunningScreen";
 import AuthResolveScreen from "./src/screens/AuthResolveScreen";
 
+// HOME SCREEN
 const Home = createStackNavigator({
   Home: HomeScreen,
   Running: RunningScreen,
 });
-
 Home.navigationOptions = {
   title: "Home",
   tabBarIcon: ({ tintColor }) => {
@@ -29,6 +34,7 @@ Home.navigationOptions = {
   },
 };
 
+// ENTIRE NAVIGATION
 const switchNavigator = createSwitchNavigator({
   authResolve: AuthResolveScreen,
   auth: createStackNavigator({
@@ -44,7 +50,6 @@ const switchNavigator = createSwitchNavigator({
 });
 
 const App = createAppContainer(switchNavigator);
-
 export default () => {
   return (
     <LocationProvider>
