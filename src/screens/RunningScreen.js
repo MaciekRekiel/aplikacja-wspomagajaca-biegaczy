@@ -1,14 +1,13 @@
 // REACT REACT-NATIVE IMPORTS
-import React, { useState, useEffect, useContext, useRef } from "react";
-import { View, StyleSheet } from "react-native";
+import React, { useEffect, useContext, useRef } from "react";
+import { View, StyleSheet, Animated } from "react-native";
 import { Button } from "react-native-elements";
 import { NavigationEvents } from "react-navigation";
-import * as TaskManager from "expo-task-manager";
+import { HeaderBackButton } from "react-navigation-stack";
 import {
   Accuracy,
   stopLocationUpdatesAsync,
   startLocationUpdatesAsync,
-  getCurrentPositionAsync,
   watchPositionAsync,
 } from "expo-location";
 
@@ -19,29 +18,34 @@ import Map from "../components/Map";
 import Stoper from "../components/Stoper";
 import { Context as LocationContext } from "../context/LocationContext";
 
-const RunningScreen = () => {
-  const { state, addLocation, startRunning, stopRunning, startStoper } =
-    useContext(LocationContext);
-  const [loc, setLoc] = useState(null);
+const RunningScreen = ({ navigation }) => {
+  const {
+    state: { running, runningTime, distance },
+    addLocation,
+    startRunning,
+    stopRunning,
+    setTime,
+  } = useContext(LocationContext);
+  const subID = useRef(null);
 
-  // BACKGROUND TASK
-  TaskManager.defineTask("TASK_FETCH_LOCATION", async ({ data, error }) => {
-    if (error) {
-      console.log(error.message);
-      return;
-    }
-    if (data) {
-      const { locations } = data;
-      setLoc(locations[0]);
-    }
-  });
+  // FETCH LOCATION ON SCREEN UP && IS NOT TRACKING
+  const startForegroundLocationFetching = async () => {
+    subID.current = await watchPositionAsync(
+      {
+        accuracy: Accuracy.BestForNavigation,
+        timeInterval: 5000,
+        distanceInterval: 2,
+      },
+      (location) => addLocation(location)
+    );
+  };
 
-  // ON COMPONENT RENDER LOCATION FETCHING
-  const initialLocation = async () => {
-    const location = await getCurrentPositionAsync({
-      accuracy: Accuracy.BestForNavigation,
-    });
-    addLocation(location);
+  // STOP FETCHING LOCATION ON SCREEN BLUR || STARTED TRACKING
+  const stopForegroundLocationFetching = () => {
+    if (subID.current) {
+      subID.current.remove();
+      subID.current = null;
+    }
   };
 
   // ICON LOCATION FETCHING
@@ -59,6 +63,7 @@ const RunningScreen = () => {
 
   // BACKGROUND AND FOREGROUND TRACKING
   const startTrackingLocation = async () => {
+    startRunning();
     await startLocationUpdatesAsync("TASK_FETCH_LOCATION", {
       accuracy: Accuracy.BestForNavigation,
       timeInterval: 1000,
@@ -69,10 +74,9 @@ const RunningScreen = () => {
           "To turn off, go back to the app and switch stop navigating.",
       },
     });
-    startRunning();
   };
 
-  // STOP TRACKING LOCATION
+  // STOP FOREGROUND|BACKGROUND TRACKING LOCATION
   const stopTrackingLocation = async () => {
     await stopLocationUpdatesAsync("TASK_FETCH_LOCATION");
     stopRunning();
@@ -80,8 +84,6 @@ const RunningScreen = () => {
 
   // TIME RENDER HELPER FUNCTION
   const renderTime = () => {
-    // XX:XX TIME OUTPUT
-    const { runningTime } = state;
     let secValue = runningTime % 60;
     let minValue = Math.floor(runningTime / 60);
     minValue < 10 ? (minValue = `0${minValue}`) : null;
@@ -89,33 +91,41 @@ const RunningScreen = () => {
     return `${minValue}:${secValue}`;
   };
 
-  // SAVE LOCATION TO THE CONTEXT EVERYTIME LOCATION STATE CHANGES
+  // INITIAL FOREGROUND FETCHING
   useEffect(() => {
-    if (loc) {
-      addLocation(loc, state.running);
+    if (!running) {
+      startForegroundLocationFetching();
     }
-  }, [loc]);
+    return () => {
+      stopForegroundLocationFetching();
+    };
+  }, [running]);
+
+  useEffect(() => {
+    // STOPER JEST PROBLEMEM
+    navigation.setParams({ running });
+  }, [running]);
 
   return (
     <View style={styles.container}>
-      <NavigationEvents onWillFocus={initialLocation} />
-      {state.running ? <Stoper interval={1000} callback={startStoper} /> : null}
+      <NavigationEvents onWillBlur={stopForegroundLocationFetching} />
+      <Stoper interval={1000} callback={setTime} show={running} />
       <Spacer>
         <View style={styles.card}>
-          <Column title="KM" value={state.distance} />
+          <Column title="KM" value={distance} />
           <Column title="Czas" value={renderTime()} />
           <Column title="Kcal" value={0} />
         </View>
       </Spacer>
       <Map onIconPress={getUserLocation} />
       <Spacer>
-        {state.running ? (
+        {running ? (
           <Button title="Stop" onPress={stopTrackingLocation} />
         ) : (
           <Button title="Start" onPress={startTrackingLocation} />
         )}
         <Spacer></Spacer>
-        {state.runningTime > 0 && !state.running ? (
+        {runningTime > 0 && !running ? (
           <Button
             title="Save The Session"
             onPress={() => console.log("Zapisuje")}
@@ -124,6 +134,26 @@ const RunningScreen = () => {
       </Spacer>
     </View>
   );
+};
+
+RunningScreen.navigationOptions = ({ navigation }) => {
+  const running = navigation.getParam("running");
+  return {
+    headerShown: !running,
+    title: "Running",
+    // headerLeft: () => (
+    //   <HeaderBackButton
+    //     onPress={async () => {
+    //       // const running = navigation.getParam("running");
+    //       // const stopStoper = navigation.getParam("stopStoper");
+    //       // if (running) {
+    //       //   stopStoper();
+    //       // }
+    //       navigation.navigate("Home");
+    //     }}
+    //   />
+    // ),
+  };
 };
 
 const styles = StyleSheet.create({

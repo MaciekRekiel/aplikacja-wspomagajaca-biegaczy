@@ -1,7 +1,8 @@
-import React, { useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { Avatar, Button } from "react-native-elements";
 import { requestForegroundPermissionsAsync } from "expo-location";
+import * as TaskManager from "expo-task-manager";
 
 import { Context as AuthContext } from "../context/AuthContext";
 import { Context as LocationContext } from "../context/LocationContext";
@@ -9,11 +10,29 @@ import Spacer from "../components/Spacer";
 import Card from "../components/Card";
 
 const HomeScreen = ({ navigation }) => {
+  const [loc, setLoc] = useState(null);
+  useEffect(() => {
+    if (loc) {
+      addLocation(loc, running);
+    }
+  }, [loc]);
+  TaskManager.defineTask("TASK_FETCH_LOCATION", async ({ data, error }) => {
+    if (error) {
+      console.log(error.message);
+      return;
+    }
+    if (data) {
+      const { locations } = data;
+      setLoc(locations[0]);
+    }
+  });
+
   const { state, signout } = useContext(AuthContext);
   const {
-    state: { permissions },
+    state: { permissions, running },
     grantPermissions,
     rejectPermissions,
+    addLocation,
   } = useContext(LocationContext);
 
   const getPermissions = async () => {

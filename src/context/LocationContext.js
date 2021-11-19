@@ -4,8 +4,8 @@ import { calculateDistance } from "../utils/calculateDistance";
 const ADD_CURRENT_LOCATION = "ADD_CURRENT_LOCATION";
 const ADD_LOCATION = "ADD_LOCATION";
 const START_RUNNING = "START_RUNNING";
-const START_STOPER = "START_STOPER";
 const STOP_RUNNING = "STOP_RUNNING";
+const SET_TIME = "SET_TIME";
 const SET_DISTANCE = "SET_DISTANCE";
 const GRANT_PERMISSIONS = "GRANT_PERMISSIONS";
 const REJECT_PERMISSIONS = "REJECT_PERMISSIONS";
@@ -18,7 +18,7 @@ const locationReducer = (state, action) => {
       return { ...state, locations: [...state.locations, action.payload] };
     case START_RUNNING:
       return { ...state, running: true };
-    case START_STOPER:
+    case SET_TIME:
       return { ...state, runningTime: state.runningTime + 1 };
     case STOP_RUNNING:
       return { ...state, running: false };
@@ -45,10 +45,10 @@ const locationReducer = (state, action) => {
   }
 };
 
-const startStoper = (dispatch) => {
+const setTime = (dispatch) => {
   return () => {
     dispatch({
-      type: START_STOPER,
+      type: SET_TIME,
     });
   };
 };
@@ -80,21 +80,12 @@ const stopRunning = (dispatch) => {
     });
   };
 };
-
 const addLocation = (dispatch) => {
   return (location, running) => {
-    //console.log(location);
     dispatch({
       type: ADD_CURRENT_LOCATION,
       payload: location,
     });
-
-    // console.log(
-    //   "Added Location lat: ",
-    //   location.coords.latitude,
-    //   "\tlong: ",
-    //   location.coords.longitude
-    // );
 
     if (running) {
       // TO UPDATE LOCATIONS
@@ -114,10 +105,10 @@ const addLocation = (dispatch) => {
 export const { Provider, Context } = createDataContext(
   locationReducer,
   {
-    startStoper,
     addLocation,
     startRunning,
     stopRunning,
+    setTime,
     grantPermissions,
     rejectPermissions,
   },
