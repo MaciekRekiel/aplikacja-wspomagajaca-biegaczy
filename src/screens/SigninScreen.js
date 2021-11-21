@@ -53,6 +53,10 @@ const SigninScreen = ({ navigation }) => {
           <Button title="Sign In" onPress={() => signin({ login, password })} />
         </Spacer>
         <Link
+          title="Forgot password?"
+          callback={() => navigation.navigate("ForgotPassword")}
+        />
+        <Link
           title="Don't have an account? Go back to a Sign Up page."
           callback={() => navigation.navigate("Signup")}
         />
