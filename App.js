@@ -37,7 +37,7 @@ Home.navigationOptions = {
 // ENTIRE NAVIGATION
 const switchNavigator = createSwitchNavigator({
   authResolve: AuthResolveScreen,
-  auth: createStackNavigator({
+  auth: createSwitchNavigator({
     Signup: SignupScreen,
     Signin: SigninScreen,
   }),

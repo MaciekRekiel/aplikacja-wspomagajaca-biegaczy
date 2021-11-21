@@ -15,7 +15,9 @@ const Link = ({ title, callback }) => {
 
 const styles = StyleSheet.create({
   link: {
-    color: "blue",
+    color: "white",
+    textAlign: "center",
+    fontWeight: "bold",
   },
 });
 

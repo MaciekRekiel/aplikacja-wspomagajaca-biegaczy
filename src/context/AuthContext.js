@@ -9,6 +9,8 @@ const SIGNIN = "SIGNIN";
 const SIGNOUT = "SIGNOUT";
 const ADD_ERROR = "ADD_ERROR";
 const CLEAR_ERROR = "CLEAR_ERROR";
+const ADD_LOADING = "ADD_LOADING";
+const REMOVE_LOADING = "REMOVE_LOADING";
 
 const authReducer = (state, action) => {
   switch (action.type) {
@@ -21,9 +23,13 @@ const authReducer = (state, action) => {
     case SIGNOUT:
       return { user: null, token: null, errorMessages: {} };
     case ADD_ERROR:
-      return { ...state, errorMessages: { ...action.payload } };
+      return { ...state, loading: false, errorMessages: { ...action.payload } };
     case CLEAR_ERROR:
       return { ...state, errorMessages: {} };
+    case ADD_LOADING:
+      return { ...state, loading: true };
+    case REMOVE_LOADING:
+      return { ...state, loading: false };
     default:
       return state;
   }
@@ -93,6 +99,9 @@ const signup = (dispatch) => {
     // If there is no errors, try to make request
     if (_.isEmpty(errorMessages)) {
       try {
+        dispatch({
+          type: ADD_LOADING,
+        });
         const response = await serverInstance.post("/users", {
           login,
           email,
@@ -114,9 +123,15 @@ const signup = (dispatch) => {
           type: SIGNIN,
           payload: { token: response.data.token, user: responseUser.data.user },
         });
+        dispatch({
+          type: REMOVE_LOADING,
+        });
         navigate("Home");
       } catch (error) {
         // Server Validation Errors
+        dispatch({
+          type: REMOVE_LOADING,
+        });
         dispatch({
           type: ADD_ERROR,
           payload: error.response.data.errorMessages,
@@ -152,6 +167,9 @@ const signin = (dispatch) => {
     if (_.isEmpty(errorMessages)) {
       try {
         // Trying to log in
+        dispatch({
+          type: ADD_LOADING,
+        });
         const response = await serverInstance.post("/users/login", {
           login,
           password,
@@ -169,6 +187,9 @@ const signin = (dispatch) => {
         dispatch({
           type: SIGNIN,
           payload: { token: response.data.token, user: responseUser.data.user },
+        });
+        dispatch({
+          type: REMOVE_LOADING,
         });
         navigate("Home");
       } catch (error) {
@@ -201,5 +222,5 @@ const signout = (dispatch) => {
 export const { Provider, Context } = createDataContext(
   authReducer,
   { signup, signin, signout, clearErrors, autoLogin },
-  { user: null, token: null, errorMessages: {} }
+  { user: null, token: null, errorMessages: {}, loading: false }
 );

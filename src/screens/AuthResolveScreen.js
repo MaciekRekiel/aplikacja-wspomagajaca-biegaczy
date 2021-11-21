@@ -5,7 +5,6 @@ import { Context as AuthContext } from "../context/AuthContext";
 
 const AuthResolveScreen = () => {
   const { autoLogin } = useContext(AuthContext);
-
   useEffect(() => {
     autoLogin();
   }, []);
