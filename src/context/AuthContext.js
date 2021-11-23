@@ -1,3 +1,4 @@
+import { Platform, ToastAndroid } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import _ from "lodash";
 
@@ -51,13 +52,13 @@ const autoLogin = (dispatch) => {
         });
         navigate("Home");
       } else {
-        navigate("Signup");
+        navigate("Signin");
       }
     } catch (error) {
       dispatch({
         type: SIGNOUT,
       });
-      navigate("Signup");
+      navigate("Signin");
     }
   };
 };
@@ -209,6 +210,140 @@ const signin = (dispatch) => {
   };
 };
 
+const resendResetCode = () => {
+  return async ({ email }) => {
+    try {
+      await serverInstance.post("/users/forgot-password", {
+        email,
+      });
+    } catch (error) {
+      if (Platform.OS === "android") {
+        ToastAndroid.show("Can't resend reset code.", ToastAndroid.LONG);
+      }
+    }
+  };
+};
+
+const forgotPassword = (dispatch) => {
+  return async ({ email = "" }) => {
+    email = email.trim().toLowerCase();
+
+    if (!email) {
+      dispatch({
+        type: ADD_ERROR,
+        payload: { emailIsEmpty: "You must enter a email" },
+      });
+    }
+    // If there is no errors, try to make request
+    else {
+      try {
+        await serverInstance.post("/users/forgot-password", {
+          email,
+        });
+        navigate("ConfirmResetPassword", { email });
+      } catch (error) {
+        // Server Validation Errors
+        dispatch({
+          type: ADD_ERROR,
+          payload: { userNotExists: error.response.data.error },
+        });
+      }
+    }
+  };
+};
+
+const validateResetCode = (dispatch) => {
+  return async ({ email = "", resetCode = "" }) => {
+    resetCode = resetCode.trim();
+    if (!resetCode) {
+      dispatch({
+        type: ADD_ERROR,
+        payload: { resetCodeIsEmpty: "You must enter a reset code" },
+      });
+    }
+    // If there is no errors, try to make request
+    else {
+      try {
+        const response = await serverInstance.post(
+          `/users/reset-password/${resetCode}`,
+          {
+            email,
+          }
+        );
+
+        navigate("ResetPassword", { token: response.data.token });
+      } catch (error) {
+        // Server Validation Errors
+        dispatch({
+          type: ADD_ERROR,
+          payload: { invalidResetCode: error.response.data.error },
+        });
+      }
+    }
+  };
+};
+
+const resetPassword = (dispatch) => {
+  return async ({ password = "", confirmPassword = "", token = "" }) => {
+    const errorMessages = {};
+    password = password.trim();
+    confirmPassword = confirmPassword.trim();
+    if (!password) {
+      errorMessages.passwordIsEmpty = "You must enter a password";
+    }
+    if (!confirmPassword) {
+      errorMessages.confirmPasswordIsEmpty = "You must confirm password";
+    }
+
+    // If there is no errors, try to make request
+    if (_.isEmpty(errorMessages)) {
+      try {
+        const body = {
+          password: password,
+          confirmPassword: confirmPassword,
+        };
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        // await serverInstance.patch("/users/change-password", {
+        //   password,
+        //   confirmPassword,
+        //   headers: {
+        //     Authorization: `Bearer ${token}`,
+        //   },
+        // });
+        await serverInstance.patch(
+          "/users/change-password",
+          {
+            password,
+            confirmPassword,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        navigate("ResetPasswordSuccessful");
+      } catch (error) {
+        // Server Validation Errors
+        dispatch({
+          type: ADD_ERROR,
+          payload: error.response.data.errorMessages,
+        });
+      }
+    } else {
+      // At least one error occurred
+      dispatch({
+        type: ADD_ERROR,
+        payload: errorMessages,
+      });
+    }
+  };
+};
+
 const signout = (dispatch) => {
   return async () => {
     // Removing token from state and async storage
@@ -221,6 +356,16 @@ const signout = (dispatch) => {
 };
 export const { Provider, Context } = createDataContext(
   authReducer,
-  { signup, signin, signout, clearErrors, autoLogin },
+  {
+    signup,
+    signin,
+    forgotPassword,
+    resendResetCode,
+    validateResetCode,
+    resetPassword,
+    signout,
+    clearErrors,
+    autoLogin,
+  },
   { user: null, token: null, errorMessages: {}, loading: false }
 );

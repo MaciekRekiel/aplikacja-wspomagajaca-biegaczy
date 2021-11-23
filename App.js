@@ -21,6 +21,10 @@ import StatsScreen from "./src/screens/StatsScreen";
 import EventsScreen from "./src/screens/EventsScreen";
 import RunningScreen from "./src/screens/RunningScreen";
 import AuthResolveScreen from "./src/screens/AuthResolveScreen";
+import ForgotPasswordScreen from "./src/screens/ForgotPasswordScreens/ForgotPasswordScreen";
+import ConfirmResetPasswordScreen from "./src/screens/ForgotPasswordScreens/ConfirmResetPasswordScreen";
+import ResetPasswordScreen from "./src/screens/ForgotPasswordScreens/ResetPasswordScreen";
+import ResetPasswordSuccessfulScreen from "./src/screens/ForgotPasswordScreens/ResetPasswordSuccessfulScreen";
 
 // HOME SCREEN
 const Home = createStackNavigator({
@@ -40,6 +44,10 @@ const switchNavigator = createSwitchNavigator({
   auth: createSwitchNavigator({
     Signup: SignupScreen,
     Signin: SigninScreen,
+    ForgotPassword: ForgotPasswordScreen,
+    ConfirmResetPassword: ConfirmResetPasswordScreen,
+    ResetPassword: ResetPasswordScreen,
+    ResetPasswordSuccessful: ResetPasswordSuccessfulScreen
   }),
   main: createBottomTabNavigator({
     Home,
