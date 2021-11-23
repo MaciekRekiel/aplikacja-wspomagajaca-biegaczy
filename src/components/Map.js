@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { View, ActivityIndicator, StyleSheet } from "react-native";
 import MapView, { Circle, Polyline } from "react-native-maps";
-import { customMapStyle } from "../utils/customMapStyle"
+import { nightMapTheme } from "../utils/customMapStyles"
 import { Icon } from "react-native-elements";
 import { FontAwesome } from "@expo/vector-icons";
 
@@ -34,7 +34,7 @@ const Map = ({ onIconPress }) => {
       </View>
       <MapView
         style={styles.map}
-        customMapStyle={customMapStyle}
+        customMapStyle={nightMapTheme}
         initialRegion={{
           ...currentLocation.coords,
           latitudeDelta: 0.002,
