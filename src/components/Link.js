@@ -3,11 +3,11 @@ import { TouchableOpacity, StyleSheet } from "react-native";
 import { Text } from "react-native-elements";
 import Spacer from "./Spacer";
 
-const Link = ({ title, callback }) => {
+const Link = ({ title, callback, children }) => {
   return (
     <TouchableOpacity onPress={callback}>
       <Spacer>
-        <Text style={styles.link}>{title}</Text>
+        <Text style={styles.link}>{children}</Text>
       </Spacer>
     </TouchableOpacity>
   );

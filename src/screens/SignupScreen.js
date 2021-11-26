@@ -7,6 +7,7 @@ import {
   StatusBar,
   Dimensions,
   View,
+  Text,
 } from "react-native";
 import { NavigationEvents } from "react-navigation";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -35,9 +36,7 @@ const SignupScreen = ({ navigation }) => {
 
   return (
     <ImageBackground
-      source={{
-        uri: "https://images.pexels.com/photos/1748447/pexels-photo-1748447.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-      }}
+      source={require("../../assets/bg.jpg")}
       resizeMethod="auto"
       style={styles.imageBackgroundStyle}
     >
@@ -59,7 +58,7 @@ const SignupScreen = ({ navigation }) => {
             />
             <Input
               placeholder="Enter email"
-              iconProps={{ type: "MaterialIcons", name: "email" }}
+              iconProps={{ type: "feather", name: "mail" }}
               value={email}
               onChangeText={setEmail}
               errorMessage={
@@ -68,7 +67,7 @@ const SignupScreen = ({ navigation }) => {
             />
             <Input
               placeholder="Enter password"
-              iconProps={{ type: "entypo", name: "lock" }}
+              iconProps={{ type: "feather", name: "lock" }}
               value={password}
               onChangeText={setPassword}
               errorMessage={errors.passwordIsEmpty || errors.passTooShort}
@@ -76,7 +75,7 @@ const SignupScreen = ({ navigation }) => {
             />
             <Input
               placeholder="Confirm password"
-              iconProps={{ type: "entypo", name: "lock" }}
+              iconProps={{ type: "feather", name: "lock" }}
               value={confirmPassword}
               onChangeText={setConfirmPassword}
               errorMessage={
@@ -91,10 +90,15 @@ const SignupScreen = ({ navigation }) => {
               }
               loading={loading}
             />
-            <Link
-              title="Already have an account? Try to Sign In!"
-              callback={() => navigation.navigate("Signin")}
-            />
+            <Link title="" callback={() => navigation.navigate("Signin")}>
+              Already have an account? Try to{" "}
+              <Text
+                style={{ color: "rgba(211, 74, 74, 1)", fontWeight: "bold" }}
+              >
+                Sign In
+              </Text>{" "}
+              !
+            </Link>
             <Line width={148} />
           </ScrollView>
         </SafeAreaView>
@@ -126,68 +130,3 @@ const styles = StyleSheet.create({
 });
 
 export default SignupScreen;
-
-/* 
-<SafeAreaView style={styles.container}>
-      <ScrollView>
-        <NavigationEvents onWillFocus={clearErrors} />
-        <Spacer>
-          <Text h3>Sign Up</Text>
-        </Spacer>
-        <Input
-          label="Username"
-          leftIcon={<AntDesign name="user" size={24} color="grey" />}
-          placeholder="Username"
-          autoCorrect={false}
-          autoCapitalize="none"
-          value={login}
-          onChangeText={setLogin}
-          errorMessage={errors.loginIsEmpty || errors.loginExists}
-        />
-        <Input
-          label="Email"
-          leftIcon={<MaterialIcons name="email" size={24} color="grey" />}
-          placeholder="email@address.com"
-          autoCorrect={false}
-          autoCapitalize="none"
-          value={email}
-          onChangeText={setEmail}
-          errorMessage={
-            errors.emailIsEmpty || errors.emailExists || errors.emailInvalid
-          }
-        />
-        <Input
-          label="Password"
-          leftIcon={<Entypo name="lock" size={24} color="grey" />}
-          placeholder="password"
-          autoCapitalize="none"
-          autoCorrect={false}
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-          errorMessage={errors.passwordIsEmpty || errors.passTooShort}
-        />
-        <Input
-          label="Confirm Password"
-          leftIcon={<Entypo name="lock" size={24} color="grey" />}
-          placeholder="confirm password"
-          autoCapitalize="none"
-          autoCorrect={false}
-          secureTextEntry
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          errorMessage={errors.confirmPasswordIsEmpty || errors.passDontMatch}
-        />
-        <Spacer>
-          <Button
-            title="Sign Up"
-            onPress={() => signup({ login, email, password, confirmPassword })}
-          />
-        </Spacer>
-        <Link
-          title="Already have an account? Try to sign in!"
-          callback={() => navigation.navigate("Signin")}
-        />
-      </ScrollView>
-    </SafeAreaView>
-*/

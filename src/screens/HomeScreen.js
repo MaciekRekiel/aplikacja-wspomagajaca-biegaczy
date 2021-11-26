@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "space-between",
+    backgroundColor: "#161A31",
   },
   card: {
     backgroundColor: "#EDEDE9",

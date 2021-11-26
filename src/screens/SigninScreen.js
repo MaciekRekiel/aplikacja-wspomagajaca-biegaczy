@@ -7,6 +7,7 @@ import {
   View,
   StatusBar,
   Dimensions,
+  Text,
 } from "react-native";
 import { NavigationEvents } from "react-navigation";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -33,9 +34,7 @@ const SigninScreen = ({ navigation }) => {
 
   return (
     <ImageBackground
-      source={{
-        uri: "https://images.pexels.com/photos/1748447/pexels-photo-1748447.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-      }}
+      source={require("../../assets/bg.jpg")}
       resizeMethod="auto"
       style={styles.imageBackgroundStyle}
     >
@@ -57,7 +56,10 @@ const SigninScreen = ({ navigation }) => {
             />
             <Input
               placeholder="Enter the password"
-              iconProps={{ type: "entypo", name: "lock" }}
+              iconProps={{
+                type: "feather",
+                name: "lock",
+              }}
               value={password}
               onChangeText={setPassword}
               errorMessage={errors.passwordIsEmpty || errors.passwordInvalid}
@@ -68,12 +70,19 @@ const SigninScreen = ({ navigation }) => {
               onPress={() => signin({ login, password })}
               loading={loading}
             />
-            <Link
-              title="Don't have an account? Go back to a Sign Up page."
-              callback={() => navigation.navigate("Signup")}
-            />
+            <Link callback={() => navigation.navigate("Signup")}>
+              Don't have an account? Go back to a{" "}
+              <Text
+                style={{ color: "rgba(211, 74, 74, 1)", fontWeight: "bold" }}
+              >
+                Sign Up
+              </Text>{" "}
+              page
+            </Link>
             <Line width={148} />
-            <Link title="Forgot Password?" callback={() => console.log("a")} />
+            <Link callback={() => navigation.navigate("ForgotPassword")}>
+              <Text>Forgot Password?</Text>
+            </Link>
           </ScrollView>
         </SafeAreaView>
       </View>
