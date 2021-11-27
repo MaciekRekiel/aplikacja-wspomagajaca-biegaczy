@@ -24,8 +24,12 @@ import { SCROLLVIEW_PADDING_TOP } from "../../utils/screen";
 const ConfirmResetPasswordScreen = ({ navigation }) => {
   const [resetCode, setResetCode] = useState("");
   const [errors] = useError();
-  const { validateResetCode, resendResetCode, clearErrors } =
-    useContext(AuthContext);
+  const {
+    state: { loading },
+    validateResetCode,
+    resendResetCode,
+    clearErrors,
+  } = useContext(AuthContext);
 
   return (
     <ImageBackground
@@ -67,6 +71,7 @@ const ConfirmResetPasswordScreen = ({ navigation }) => {
                   resetCode,
                 })
               }
+              loading={loading}
             />
             <Link callback={() => navigation.navigate("Signin")}>
               Go Back to the{" "}

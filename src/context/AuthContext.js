@@ -237,12 +237,21 @@ const forgotPassword = (dispatch) => {
     // If there is no errors, try to make request
     else {
       try {
+        dispatch({
+          type: ADD_LOADING,
+        });
         await serverInstance.post("/users/forgot-password", {
           email,
+        });
+        dispatch({
+          type: REMOVE_LOADING,
         });
         navigate("ConfirmResetPassword", { email });
       } catch (error) {
         // Server Validation Errors
+        dispatch({
+          type: REMOVE_LOADING,
+        });
         dispatch({
           type: ADD_ERROR,
           payload: { userNotExists: error.response.data.error },
@@ -264,16 +273,24 @@ const validateResetCode = (dispatch) => {
     // If there is no errors, try to make request
     else {
       try {
+        dispatch({
+          type: ADD_LOADING,
+        });
         const response = await serverInstance.post(
           `/users/reset-password/${resetCode}`,
           {
             email,
           }
         );
-
+        dispatch({
+          type: REMOVE_LOADING,
+        });
         navigate("ResetPassword", { token: response.data.token });
       } catch (error) {
         // Server Validation Errors
+        dispatch({
+          type: REMOVE_LOADING,
+        });
         dispatch({
           type: ADD_ERROR,
           payload: { invalidResetCode: error.response.data.error },
@@ -314,6 +331,9 @@ const resetPassword = (dispatch) => {
         //     Authorization: `Bearer ${token}`,
         //   },
         // });
+        dispatch({
+          type: ADD_LOADING,
+        });
         await serverInstance.patch(
           "/users/change-password",
           {
@@ -326,9 +346,15 @@ const resetPassword = (dispatch) => {
             },
           }
         );
+        dispatch({
+          type: REMOVE_LOADING,
+        });
         navigate("ResetPasswordSuccessful");
       } catch (error) {
         // Server Validation Errors
+        dispatch({
+          type: REMOVE_LOADING,
+        });
         dispatch({
           type: ADD_ERROR,
           payload: error.response.data.errorMessages,

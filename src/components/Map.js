@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { View, ActivityIndicator, StyleSheet } from "react-native";
 import MapView, { Circle, Polyline } from "react-native-maps";
-import { nightMapTheme } from "../utils/customMapStyles"
+import { nightMapTheme } from "../utils/customMapStyles";
 import { Icon } from "react-native-elements";
 import { FontAwesome } from "@expo/vector-icons";
 
@@ -9,9 +9,16 @@ import Spacer from "./Spacer";
 import { Context as LocationContext } from "../context/LocationContext";
 
 const Map = ({ onIconPress }) => {
+  const [lineDashPattern, setLineDashPatter] = useState([0]);
   const {
-    state: { currentLocation, locations },
+    state: { currentLocation, locations, running },
   } = useContext(LocationContext);
+
+  useEffect(() => {
+    if (running) {
+      setLineDashPatter(null);
+    }
+  }, [running]);
 
   if (!currentLocation) {
     return (
@@ -55,11 +62,13 @@ const Map = ({ onIconPress }) => {
         />
         <Polyline
           strokeColor="rgba(2, 149, 182, 1)"
+          lineDashPattern={lineDashPattern}
           strokeWidth={6}
           coordinates={locations.map((loc) => loc.coords)}
         />
         <Polyline
           // lineDashPattern={[1]}
+          lineDashPattern={lineDashPattern}
           strokeColor="rgba(31, 255, 218, 0.7)"
           strokeWidth={4}
           coordinates={locations.map((loc) => loc.coords)}

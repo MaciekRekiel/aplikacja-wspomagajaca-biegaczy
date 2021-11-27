@@ -26,7 +26,11 @@ const SCREEN_HEIGHT = Dimensions.get("window").height;
 const ForgotPasswordScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [errors] = useError();
-  const { forgotPassword, clearErrors } = useContext(AuthContext);
+  const {
+    state: { loading },
+    forgotPassword,
+    clearErrors,
+  } = useContext(AuthContext);
 
   return (
     <ImageBackground
@@ -63,6 +67,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
             <Button
               title="Send Code"
               onPress={() => forgotPassword({ email })}
+              loading={loading}
             />
             <Link callback={() => navigation.navigate("Signin")}>
               Go Back to the{" "}
