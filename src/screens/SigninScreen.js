@@ -6,7 +6,6 @@ import {
   ImageBackground,
   View,
   StatusBar,
-  Dimensions,
   Text,
 } from "react-native";
 import { NavigationEvents } from "react-navigation";
@@ -19,8 +18,12 @@ import Link from "../components/Link";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import Line from "../components/Line";
+import { calculatePaddingTop } from "../utils/screen";
 
-const SCREEN_HEIGHT = Dimensions.get("window").height;
+const SCROLLVIEW_PADDING_TOP = calculatePaddingTop({
+  700: 0.15,
+  600: 0.1,
+});
 
 const SigninScreen = ({ navigation }) => {
   const [login, setLogin] = useState("");
@@ -95,7 +98,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollViewStyle: {
-    paddingTop: SCREEN_HEIGHT / 4,
+    paddingTop: SCROLLVIEW_PADDING_TOP,
   },
   imageBackgroundStyle: {
     flex: 1,

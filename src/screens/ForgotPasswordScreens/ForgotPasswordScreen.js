@@ -16,6 +16,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Context as AuthContext } from "../../context/AuthContext";
 import { useError } from "../../hooks/useError";
 import Line from "../../components/Line";
+import Link from "../../components/Link";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
 import Spacer from "../../components/Spacer";
@@ -53,22 +54,25 @@ const ForgotPasswordScreen = ({ navigation }) => {
               </Text>
             </Spacer>
             <Input
-              placeholder="Enter email"
+              placeholder="email@address.com"
               iconProps={{ type: "feather", name: "mail" }}
               value={email}
               onChangeText={setEmail}
               errorMessage={errors.emailIsEmpty || errors.userNotExists}
-              placeholder="email@address.com"
-              keyboardType="email-address"
             />
             <Button
               title="Send Code"
               onPress={() => forgotPassword({ email })}
             />
-            <Button
-              title="Cancel"
-              onPress={() => navigation.navigate("Signin")}
-            />
+            <Link callback={() => navigation.navigate("Signin")}>
+              Go Back to the{" "}
+              <Text
+                style={{ color: "rgba(211, 74, 74, 1)", fontWeight: "bold" }}
+              >
+                Sign In
+              </Text>{" "}
+              page
+            </Link>
             <Line width={148} />
           </ScrollView>
         </SafeAreaView>

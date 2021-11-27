@@ -5,7 +5,6 @@ import {
   ScrollView,
   ImageBackground,
   StatusBar,
-  Dimensions,
   View,
   Text,
 } from "react-native";
@@ -19,8 +18,12 @@ import Line from "../components/Line";
 import Link from "../components/Link";
 import Button from "../components/Button";
 import Input from "../components/Input";
+import { calculatePaddingTop } from "../utils/screen";
 
-const SCREEN_HEIGHT = Dimensions.get("window").height;
+const SCROLLVIEW_PADDING_TOP = calculatePaddingTop({
+  700: 0.15,
+  600: 0.1,
+});
 
 const SignupScreen = ({ navigation }) => {
   const [login, setLogin] = useState("");
@@ -90,7 +93,7 @@ const SignupScreen = ({ navigation }) => {
               }
               loading={loading}
             />
-            <Link title="" callback={() => navigation.navigate("Signin")}>
+            <Link callback={() => navigation.navigate("Signin")}>
               Already have an account? Try to{" "}
               <Text
                 style={{ color: "rgba(211, 74, 74, 1)", fontWeight: "bold" }}
@@ -118,7 +121,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollViewStyle: {
-    paddingTop: SCREEN_HEIGHT / 6,
+    paddingTop: SCROLLVIEW_PADDING_TOP,
   },
   imageBackgroundStyle: {
     flex: 1,
