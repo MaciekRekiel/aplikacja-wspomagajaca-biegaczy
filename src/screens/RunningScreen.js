@@ -1,15 +1,17 @@
 // REACT REACT-NATIVE IMPORTS
 import React, { useEffect, useContext, useRef } from "react";
-import { View, StyleSheet, Animated } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { Button } from "react-native-elements";
 import { NavigationEvents } from "react-navigation";
-import { HeaderBackButton } from "react-navigation-stack";
+import { LinearGradient } from "expo-linear-gradient";
 import {
   Accuracy,
   stopLocationUpdatesAsync,
   startLocationUpdatesAsync,
   watchPositionAsync,
 } from "expo-location";
+import Header from "../components/Header";
+import { HeaderBackButton } from "react-navigation-stack";
 
 // REUSABLE COMPONENTS IMPORT
 import Spacer from "../components/Spacer";
@@ -107,40 +109,72 @@ const RunningScreen = ({ navigation }) => {
   }, [running]);
 
   return (
-    <View style={styles.container}>
-      <NavigationEvents onWillBlur={stopForegroundLocationFetching} />
-      <Stoper interval={1000} callback={setTime} show={running} />
-      <Spacer>
-        <View style={styles.card}>
-          <Column title="KM" value={distance} />
-          <Column title="Czas" value={renderTime()} />
-          <Column title="Kcal" value={0} />
-        </View>
-      </Spacer>
-      <Map onIconPress={getUserLocation} />
-      <Spacer>
-        {running ? (
-          <Button title="Stop" onPress={stopTrackingLocation} />
-        ) : (
-          <Button title="Start" onPress={startTrackingLocation} />
-        )}
-        <Spacer></Spacer>
-        {runningTime > 0 && !running ? (
-          <Button
-            title="Save The Session"
-            onPress={() => console.log("Zapisuje")}
-          />
-        ) : null}
-      </Spacer>
-    </View>
+    <>
+      <Header
+        title="Running"
+        backIcon
+        callback={() => navigation.navigate("Home")}
+      />
+      <LinearGradient
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        colors={["hsl(231, 33%, 16%)", "hsl(218, 69%, 20%)"]}
+        style={styles.container}
+      >
+        <NavigationEvents onWillBlur={stopForegroundLocationFetching} />
+        <Stoper interval={1000} callback={setTime} show={running} />
+        <Spacer>
+          <LinearGradient
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            // colors={["hsl(234, 43%, 36%)", "hsl(218, 69%, 40%)"]}
+            colors={["hsl(203, 68%, 30%)", "hsl(203, 68%, 37%)"]}
+            style={styles.card}
+          >
+            <Column title="KM" value={distance} />
+            <Column title="Czas" value={renderTime()} />
+            <Column title="Kcal" value={0} />
+          </LinearGradient>
+        </Spacer>
+        <Map onIconPress={getUserLocation} />
+        <Spacer>
+          {running ? (
+            <Button
+              type="outline"
+              title="Stop"
+              onPress={stopTrackingLocation}
+            />
+          ) : (
+            <Button
+              type="outline"
+              title="Start"
+              onPress={startTrackingLocation}
+            />
+          )}
+          <Spacer></Spacer>
+          {runningTime > 0 && !running ? (
+            <Button
+              type="outline"
+              title="Save The Session"
+              onPress={() => console.log("Zapisuje")}
+            />
+          ) : null}
+        </Spacer>
+      </LinearGradient>
+    </>
   );
 };
 
 RunningScreen.navigationOptions = ({ navigation }) => {
   const running = navigation.getParam("running");
   return {
-    headerShown: !running,
     title: "Running",
+    headerStyle: {
+      backgroundColor: "hsl(234, 43%, 19%)",
+    },
+    headerShown: false,
+    headerTintColor: "white",
+    //animationEnabled: false,
     // headerLeft: () => (
     //   <HeaderBackButton
     //     onPress={async () => {
@@ -159,7 +193,8 @@ RunningScreen.navigationOptions = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-around",
+    justifyContent: "space-between",
+    marginTop: 90,
   },
   card: {
     backgroundColor: "#EDEDE9",
@@ -167,13 +202,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     padding: 8,
     borderRadius: 4,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
     elevation: 5,
     height: 100,
   },

@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(46, 41, 78, 0.7)",
+    backgroundColor: "	rgba(16, 59, 85, 0.7)",
   },
   header: {
     fontSize: 32,

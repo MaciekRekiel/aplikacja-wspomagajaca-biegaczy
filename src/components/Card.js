@@ -1,6 +1,7 @@
 import React from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { Text, ListItem } from "react-native-elements";
+import { LinearGradient } from "expo-linear-gradient";
 
 import Spacer from "./Spacer";
 
@@ -17,7 +18,13 @@ const Card = ({ title, data }) => {
 
   return (
     <Spacer>
-      <View style={styles.card}>
+      <LinearGradient
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        // colors={["hsl(234, 43%, 36%)", "hsl(218, 69%, 40%)"]}
+        colors={["hsl(203, 68%, 30%)", "hsl(203, 68%, 37%)"]}
+        style={styles.card}
+      >
         <Text h3>{title}</Text>
         {data.map(({ title, subtitle }) => (
           <TouchableOpacity key={title}>
@@ -30,23 +37,15 @@ const Card = ({ title, data }) => {
             </ListItem>
           </TouchableOpacity>
         ))}
-      </View>
+      </LinearGradient>
     </Spacer>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#EDEDE9",
     padding: 8,
     borderRadius: 4,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
     elevation: 5,
   },
 });

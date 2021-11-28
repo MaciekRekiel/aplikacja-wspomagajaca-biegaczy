@@ -78,6 +78,9 @@ const signup = (dispatch) => {
     password = "",
     confirmPassword = "",
   }) => {
+    dispatch({
+      type: CLEAR_ERROR,
+    });
     const errorMessages = {};
 
     login = login.trim();
@@ -150,6 +153,9 @@ const signup = (dispatch) => {
 
 const signin = (dispatch) => {
   return async ({ login = "", password = "" }) => {
+    dispatch({
+      type: CLEAR_ERROR,
+    });
     const errorMessages = {};
 
     login = login.trim();

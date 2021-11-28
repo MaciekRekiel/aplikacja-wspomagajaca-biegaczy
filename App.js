@@ -1,8 +1,9 @@
 // REACT
 import React from "react";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
-import { createStackNavigator } from "react-navigation-stack";
+import { createStackNavigator, Header } from "react-navigation-stack";
 import { createBottomTabNavigator } from "react-navigation-tabs";
+import { Animated, Easing } from "react-native";
 
 // ICONS
 import { Entypo } from "@expo/vector-icons";
@@ -27,7 +28,7 @@ import ResetPasswordScreen from "./src/screens/ForgotPasswordScreens/ResetPasswo
 import ResetPasswordSuccessfulScreen from "./src/screens/ForgotPasswordScreens/ResetPasswordSuccessfulScreen";
 
 // HOME SCREEN
-const Home = createStackNavigator({
+const Home = createSwitchNavigator({
   Home: HomeScreen,
   Running: RunningScreen,
 });
@@ -47,14 +48,25 @@ const switchNavigator = createSwitchNavigator({
     ForgotPassword: ForgotPasswordScreen,
     ConfirmResetPassword: ConfirmResetPasswordScreen,
     ResetPassword: ResetPasswordScreen,
-    ResetPasswordSuccessful: ResetPasswordSuccessfulScreen
+    ResetPasswordSuccessful: ResetPasswordSuccessfulScreen,
   }),
-  main: createBottomTabNavigator({
-    Home,
-    Profile: ProfileScreen,
-    Stats: StatsScreen,
-    Events: EventsScreen,
-  }),
+  main: createBottomTabNavigator(
+    {
+      Home,
+      Profile: ProfileScreen,
+      Stats: StatsScreen,
+      Events: EventsScreen,
+    },
+    {
+      tabBarOptions: {
+        activeTintColor: "hsl(203, 68%, 47%)",
+        style: {
+          borderTopColor: "hsl(203, 68%, 27%)",
+          backgroundColor: "hsl(234, 43%, 19%)",
+        },
+      },
+    }
+  ),
 });
 
 const App = createAppContainer(switchNavigator);

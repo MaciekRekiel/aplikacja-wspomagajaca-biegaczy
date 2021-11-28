@@ -29,7 +29,7 @@ const Map = ({ onIconPress }) => {
   }
 
   return (
-    <Spacer>
+    <View>
       <View style={styles.icon}>
         <Icon
           reverse
@@ -41,6 +41,7 @@ const Map = ({ onIconPress }) => {
       </View>
       <MapView
         style={styles.map}
+        loadingBackgroundColor="hsl(234, 43%, 19%)"
         customMapStyle={nightMapTheme}
         initialRegion={{
           ...currentLocation.coords,
@@ -74,14 +75,14 @@ const Map = ({ onIconPress }) => {
           coordinates={locations.map((loc) => loc.coords)}
         />
       </MapView>
-    </Spacer>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   map: {
     position: "relative",
-    height: 300,
+    height: 350,
   },
   icon: {
     position: "absolute",
