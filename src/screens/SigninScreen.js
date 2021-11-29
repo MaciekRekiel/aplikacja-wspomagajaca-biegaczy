@@ -19,10 +19,12 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import Line from "../components/Line";
 import { calculatePaddingTop } from "../utils/screen";
+import { authStyles } from "../styles/authStyles";
 
 const SCROLLVIEW_PADDING_TOP = calculatePaddingTop({
-  700: 0.15,
-  600: 0.1,
+  750: 0.15,
+  700: 0.1,
+  650: 0.5,
 });
 
 const SigninScreen = ({ navigation }) => {
@@ -75,16 +77,11 @@ const SigninScreen = ({ navigation }) => {
             />
             <Link callback={() => navigation.navigate("Signup")}>
               Don't have an account? Go back to a{" "}
-              <Text
-                style={{ color: "rgba(211, 74, 74, 1)", fontWeight: "bold" }}
-              >
-                Sign Up
-              </Text>{" "}
-              page
+              <Text style={styles.highlightedText}>Sign Up</Text> page
             </Link>
             <Line width={148} />
             <Link callback={() => navigation.navigate("ForgotPassword")}>
-              <Text>Forgot Password?</Text>
+              Forgot Password?
             </Link>
           </ScrollView>
         </SafeAreaView>
@@ -93,26 +90,6 @@ const SigninScreen = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  scrollViewStyle: {
-    paddingTop: SCROLLVIEW_PADDING_TOP,
-  },
-  imageBackgroundStyle: {
-    flex: 1,
-  },
-  overlay: {
-    flex: 1,
-    backgroundColor: "	rgba(16, 59, 85, 0.7)",
-  },
-});
-
-SigninScreen.navigationOptions = () => {
-  return {
-    headerShown: false,
-  };
-};
+const styles = authStyles(SCROLLVIEW_PADDING_TOP);
 
 export default SigninScreen;

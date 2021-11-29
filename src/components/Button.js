@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native";
 import { Button as ElemButton } from "react-native-elements";
 
 import Spacer from "./Spacer";
+import { colorsAuth } from "../styles/colors";
 
 const Button = ({ title, onPress, loading }) => {
   return (
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   buttonStyle: {
-    backgroundColor: "rgba(211, 74, 74, 1)",
+    backgroundColor: colorsAuth.primary,
     height: 48,
   },
   buttonTitleStyle: {

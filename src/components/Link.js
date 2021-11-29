@@ -3,7 +3,9 @@ import { TouchableOpacity, StyleSheet } from "react-native";
 import { Text } from "react-native-elements";
 import Spacer from "./Spacer";
 
-const Link = ({ title, callback, children }) => {
+import { colorsAuth } from "../styles/colors";
+
+const Link = ({ callback, children }) => {
   return (
     <TouchableOpacity onPress={callback}>
       <Spacer>
@@ -15,7 +17,7 @@ const Link = ({ title, callback, children }) => {
 
 const styles = StyleSheet.create({
   link: {
-    color: "white",
+    color: colorsAuth.secondary,
     textAlign: "center",
     fontWeight: "bold",
   },

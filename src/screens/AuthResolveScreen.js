@@ -10,7 +10,7 @@ const AuthResolveScreen = () => {
   useEffect(() => {
     setTimeout(() => {
       autoLogin();
-    }, 1250);
+    }, 850);
   }, []);
 
   return (
