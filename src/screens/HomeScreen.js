@@ -11,24 +11,15 @@ import Spacer from "../components/Spacer";
 import Card from "../components/Card";
 import SwipeDeck from "../components/SwipeDeck";
 import Header from "../components/Header";
+import Stoper from "../components/Stoper";
 
 const HomeScreen = ({ navigation }) => {
-  const [loc, setLoc] = useState(null);
-  useEffect(() => {
-    if (loc) {
-      addLocation(loc, running);
-    }
-  }, [loc]);
-  TaskManager.defineTask("TASK_FETCH_LOCATION", async ({ data, error }) => {
-    if (error) {
-      console.log(error.message);
-      return;
-    }
-    if (data) {
-      const { locations } = data;
-      setLoc(locations[0]);
-    }
-  });
+  // const [loc, setLoc] = useState(null);
+  // useEffect(() => {
+  //   if (loc) {
+  //     addLocation(loc, running);
+  //   }
+  // }, [loc]);
 
   const { state, signout } = useContext(AuthContext);
   const {
@@ -36,6 +27,7 @@ const HomeScreen = ({ navigation }) => {
     grantPermissions,
     rejectPermissions,
     addLocation,
+    setTime,
   } = useContext(LocationContext);
 
   const getPermissions = async () => {
@@ -59,6 +51,7 @@ const HomeScreen = ({ navigation }) => {
   return (
     <>
       <Header title="Home" backIcon />
+      <Stoper interval={1000} callback={setTime} show={running} />
       <ScrollView contentContainerStyle={{ flexGrow: 1, paddingTop: 90 }}>
         <StatusBar
           barStyle="light-content"

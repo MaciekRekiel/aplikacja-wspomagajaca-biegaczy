@@ -8,17 +8,17 @@ import { FontAwesome } from "@expo/vector-icons";
 import Spacer from "./Spacer";
 import { Context as LocationContext } from "../context/LocationContext";
 
-const Map = ({ onIconPress }) => {
-  const [lineDashPattern, setLineDashPatter] = useState([0]);
+const Map = ({ isFocus, onIconPress }) => {
   const {
-    state: { currentLocation, locations, running },
+    state: { currentLocation, locations, running, lineDashPattern },
   } = useContext(LocationContext);
 
-  useEffect(() => {
-    if (running) {
-      setLineDashPatter(null);
-    }
-  }, [running]);
+  // useEffect(() => {
+  //   if (running) {
+  //     console.log("Set to null");
+  //     setLineDashPatter(null);
+  //   }
+  // }, [running, isFocus]);
 
   if (!currentLocation) {
     return (

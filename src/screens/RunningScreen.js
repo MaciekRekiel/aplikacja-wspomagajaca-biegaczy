@@ -1,8 +1,9 @@
 // REACT REACT-NATIVE IMPORTS
-import React, { useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { View, StyleSheet } from "react-native";
 import { Button } from "react-native-elements";
 import { NavigationEvents } from "react-navigation";
+import * as TaskManager from "expo-task-manager";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   Accuracy,
@@ -21,14 +22,32 @@ import Stoper from "../components/Stoper";
 import { Context as LocationContext } from "../context/LocationContext";
 
 const RunningScreen = ({ navigation }) => {
+  const [loc, setLoc] = useState(null);
+  useEffect(() => {
+    if (loc) {
+      addLocation(loc, running);
+    }
+  }, [loc]);
   const {
     state: { running, runningTime, distance },
     addLocation,
     startRunning,
     stopRunning,
     setTime,
+    removeLineDashPattern,
   } = useContext(LocationContext);
   const subID = useRef(null);
+
+  TaskManager.defineTask("TASK_FETCH_LOCATION", async ({ data, error }) => {
+    if (error) {
+      console.log(error.message);
+      return;
+    }
+    if (data) {
+      const { locations } = data;
+      setLoc(locations[0]);
+    }
+  });
 
   // FETCH LOCATION ON SCREEN UP && IS NOT TRACKING
   const startForegroundLocationFetching = async () => {
@@ -121,7 +140,16 @@ const RunningScreen = ({ navigation }) => {
         colors={["hsl(231, 33%, 16%)", "hsl(218, 69%, 20%)"]}
         style={styles.container}
       >
-        <NavigationEvents onWillBlur={stopForegroundLocationFetching} />
+        <NavigationEvents
+          onDidFocus={() => {
+            if (running) {
+              removeLineDashPattern();
+            }
+          }}
+          onWillBlur={() => {
+            stopForegroundLocationFetching();
+          }}
+        />
         <Stoper interval={1000} callback={setTime} show={running} />
         <Spacer>
           <LinearGradient
