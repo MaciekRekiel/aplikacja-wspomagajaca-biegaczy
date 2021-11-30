@@ -1,6 +1,12 @@
 import { StyleSheet } from "react-native";
 import { colorsAuth } from "./colors";
-import { SCROLLVIEW_PADDING_TOP } from "../utils/screen";
+import { calculatePaddingTop } from "../utils/screen";
+
+const SCROLLVIEW_PADDING_TOP = calculatePaddingTop({
+  750: 0.15,
+  700: 0.1,
+  650: 0.5,
+});
 
 export const authStyles = (paddingTop = SCROLLVIEW_PADDING_TOP) =>
   StyleSheet.create({
@@ -20,5 +26,13 @@ export const authStyles = (paddingTop = SCROLLVIEW_PADDING_TOP) =>
     highlightedText: {
       color: colorsAuth.primary,
       fontWeight: "bold",
+    },
+    header: {
+      fontSize: 32,
+      color: colorsAuth.secondary,
+    },
+    description: {
+      fontSize: 16,
+      color: colorsAuth.secondary,
     },
   });

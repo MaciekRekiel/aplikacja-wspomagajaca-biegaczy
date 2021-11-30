@@ -244,6 +244,9 @@ const forgotPassword = (dispatch) => {
     else {
       try {
         dispatch({
+          type: CLEAR_ERROR,
+        });
+        dispatch({
           type: ADD_LOADING,
         });
         await serverInstance.post("/users/forgot-password", {
@@ -279,6 +282,9 @@ const validateResetCode = (dispatch) => {
     // If there is no errors, try to make request
     else {
       try {
+        dispatch({
+          type: CLEAR_ERROR,
+        });
         dispatch({
           type: ADD_LOADING,
         });
@@ -321,22 +327,9 @@ const resetPassword = (dispatch) => {
     // If there is no errors, try to make request
     if (_.isEmpty(errorMessages)) {
       try {
-        const body = {
-          password: password,
-          confirmPassword: confirmPassword,
-        };
-        const config = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
-        // await serverInstance.patch("/users/change-password", {
-        //   password,
-        //   confirmPassword,
-        //   headers: {
-        //     Authorization: `Bearer ${token}`,
-        //   },
-        // });
+        dispatch({
+          type: CLEAR_ERROR,
+        });
         dispatch({
           type: ADD_LOADING,
         });
