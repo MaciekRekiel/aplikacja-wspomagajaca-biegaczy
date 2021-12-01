@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, StyleSheet, ScrollView, StatusBar } from "react-native";
+import { View, StyleSheet, ScrollView, StatusBar, Text } from "react-native";
 import { Avatar, Button } from "react-native-elements";
 import { requestForegroundPermissionsAsync } from "expo-location";
 import * as TaskManager from "expo-task-manager";
@@ -10,7 +10,7 @@ import { Context as LocationContext } from "../context/LocationContext";
 import Spacer from "../components/Spacer";
 import Card from "../components/Card";
 import SwipeDeck from "../components/SwipeDeck";
-import Header from "../components/Header";
+import Header from "../components/mainFlow/Header";
 import Stoper from "../components/Stoper";
 
 const HomeScreen = ({ navigation }) => {
@@ -50,15 +50,14 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <>
-      <Header title="Home" backIcon />
-      <Stoper interval={1000} callback={setTime} show={running} />
-      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingTop: 90 }}>
+      <Header title="Home" rightButton rightButtonCallback={signout} />
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <StatusBar
           barStyle="light-content"
           translucent={true}
           backgroundColor="transparent"
         />
-
+        <Stoper interval={1000} callback={setTime} show={running} />
         <LinearGradient
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -101,15 +100,15 @@ const HomeScreen = ({ navigation }) => {
   );
 };
 
-HomeScreen.navigationOptions = () => {
-  return {
-    headerStyle: {
-      backgroundColor: "hsl(234, 43%, 19%)",
-    },
-    headerShown: false,
-    headerTintColor: "white",
-  };
-};
+// HomeScreen.navigationOptions = () => {
+//   return {
+//     headerStyle: {
+//       backgroundColor: "hsl(234, 43%, 19%)",
+//     },
+//     headerShown: false,
+//     headerTintColor: "white",
+//   };
+// };
 
 const styles = StyleSheet.create({
   container: {

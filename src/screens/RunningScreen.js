@@ -1,6 +1,6 @@
 // REACT REACT-NATIVE IMPORTS
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, StatusBar, ScrollView } from "react-native";
 import { Button } from "react-native-elements";
 import { NavigationEvents } from "react-navigation";
 import * as TaskManager from "expo-task-manager";
@@ -11,8 +11,7 @@ import {
   startLocationUpdatesAsync,
   watchPositionAsync,
 } from "expo-location";
-import Header from "../components/Header";
-import { HeaderBackButton } from "react-navigation-stack";
+import Header from "../components/mainFlow/Header";
 
 // REUSABLE COMPONENTS IMPORT
 import Spacer from "../components/Spacer";
@@ -132,7 +131,12 @@ const RunningScreen = ({ navigation }) => {
       <Header
         title="Running"
         backIcon
-        callback={() => navigation.navigate("Home")}
+        backIconOnPress={() => navigation.navigate("Home")}
+      />
+      <StatusBar
+        barStyle="light-content"
+        translucent={true}
+        backgroundColor="transparent"
       />
       <LinearGradient
         start={{ x: 0, y: 0 }}
@@ -155,7 +159,6 @@ const RunningScreen = ({ navigation }) => {
           <LinearGradient
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            // colors={["hsl(234, 43%, 36%)", "hsl(218, 69%, 40%)"]}
             colors={["hsl(203, 68%, 30%)", "hsl(203, 68%, 37%)"]}
             style={styles.card}
           >
@@ -222,7 +225,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "space-between",
-    marginTop: 90,
   },
   card: {
     backgroundColor: "#EDEDE9",
