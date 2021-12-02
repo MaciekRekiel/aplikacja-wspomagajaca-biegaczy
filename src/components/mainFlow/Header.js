@@ -1,6 +1,9 @@
 import React from "react";
 import { View, StyleSheet, Text, TouchableNativeFeedback } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { Icon, Button } from "react-native-elements";
+
+import { colorsAuth, colorsMain } from "../../styles/colors";
 
 const Header = ({
   title,
@@ -16,32 +19,48 @@ const Header = ({
       left: 0,
       right: 0,
       bottom: 0,
-      elevation: 5,
-      backgroundColor: "hsl(234, 43%, 19%)",
+      elevation: 20,
+      backgroundColor: colorsMain.backgroundHeader,
       height: 90,
-      borderColor: "green",
-      borderWidth: 1,
-      marginBottom: 90,
     },
     headerText: {
       position: "absolute",
-      color: "white",
+      color: colorsMain.headerButtonBackgroundPrimary,
       bottom: 12,
       left: backIcon ? 54 : 18,
       fontSize: 20,
       fontWeight: "bold",
-      borderColor: "red",
-      borderWidth: 1,
     },
     iconStyle: {
       position: "absolute",
       bottom: 12,
       left: 12,
     },
-    rightButtonStyle: {
+    rightButtonPlacement: {
       position: "absolute",
       right: 12,
       bottom: 8,
+      //backgroundColor: "red",
+      // padding: 1,
+      // paddingVertical: 2,
+      // borderRadius: 4,
+    },
+    rightButtonBorder: {
+      padding: 1.5,
+      paddingVertical: 1.5,
+      borderRadius: 4,
+    },
+    rightButtonContainer: {
+      //borderColor: "white",
+      backgroundColor: colorsMain.backgroundHeader,
+      //borderWidth: 1,
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      //borderRadius: 4,
+    },
+    rightButtonText: {
+      fontSize: 18,
+      color: colorsMain.headerButtonBackgroundSecondary,
     },
   });
 
@@ -52,19 +71,33 @@ const Header = ({
         {backIcon ? (
           <Icon
             onPress={backIconOnPress}
-            color="white"
+            color={colorsMain.headerButtonBackgroundPrimary}
             type="ionicon"
             name="arrow-back"
             containerStyle={styles.iconStyle}
           />
         ) : null}
         <Text style={styles.headerText}>{title}</Text>
-        <View style={styles.rightButtonStyle}>
-          <TouchableNativeFeedback>
-            <View style={{ backgroundColor: "lightblue", padding: 8 }}>
-              <Text style={{ color: "white", fontSize: 24 }}>Sign out</Text>
-            </View>
-          </TouchableNativeFeedback>
+        <View style={styles.rightButtonPlacement}>
+          <LinearGradient
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.rightButtonBorder}
+            colors={[
+              colorsMain.headerButtonBackgroundPrimary,
+              colorsMain.headerButtonBackgroundSecondary,
+            ]}
+          >
+            <TouchableNativeFeedback
+              background={TouchableNativeFeedback.Ripple(
+                colorsMain.headerButtonBackgroundPrimary
+              )}
+            >
+              <View style={styles.rightButtonContainer}>
+                <Text style={styles.rightButtonText}>Sign out</Text>
+              </View>
+            </TouchableNativeFeedback>
+          </LinearGradient>
         </View>
       </View>
     </>

@@ -2,31 +2,22 @@ import React, { useState, useEffect, useContext } from "react";
 import { View, StyleSheet, ScrollView, StatusBar, Text } from "react-native";
 import { Avatar, Button } from "react-native-elements";
 import { requestForegroundPermissionsAsync } from "expo-location";
-import * as TaskManager from "expo-task-manager";
 import { LinearGradient } from "expo-linear-gradient";
 
 import { Context as AuthContext } from "../context/AuthContext";
 import { Context as LocationContext } from "../context/LocationContext";
 import Spacer from "../components/Spacer";
-import Card from "../components/Card";
 import SwipeDeck from "../components/SwipeDeck";
 import Header from "../components/mainFlow/Header";
 import Stoper from "../components/Stoper";
+import { colorsMain } from "../styles/colors";
 
 const HomeScreen = ({ navigation }) => {
-  // const [loc, setLoc] = useState(null);
-  // useEffect(() => {
-  //   if (loc) {
-  //     addLocation(loc, running);
-  //   }
-  // }, [loc]);
-
   const { state, signout } = useContext(AuthContext);
   const {
     state: { permissions, running },
     grantPermissions,
     rejectPermissions,
-    addLocation,
     setTime,
   } = useContext(LocationContext);
 
@@ -61,7 +52,11 @@ const HomeScreen = ({ navigation }) => {
         <LinearGradient
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          colors={["hsl(231, 33%, 16%)", "hsl(218, 69%, 20%)"]}
+          //colors={["hsl(231, 33%, 16%)", "hsl(218, 69%, 20%)"]}
+          colors={[
+            colorsMain.backgroundPrimary,
+            colorsMain.backgroundSecondary,
+          ]}
           style={styles.container}
         >
           <View>

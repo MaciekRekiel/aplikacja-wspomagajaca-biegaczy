@@ -3,6 +3,7 @@ import { View, StyleSheet, ScrollView, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import MapView from "react-native-maps";
 
+import { colorsMain } from "../styles/colors";
 import { SCREEN_WIDTH } from "../utils/screen";
 import { nightMapTheme } from "../utils/customMapStyles";
 
@@ -12,7 +13,11 @@ const SwipeDeck = () => {
       <LinearGradient
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        colors={["hsl(203, 68%, 30%)", "hsl(203, 68%, 37%)"]}
+        //colors={["hsl(203, 68%, 30%)", "hsl(203, 68%, 37%)"]}
+        colors={[
+          colorsMain.cardBackgroundPrimary,
+          colorsMain.cardBackgroundSecondary,
+        ]}
         style={styles.box}
       >
         <Text style={styles.dataHeader}>26.11.2021</Text>
