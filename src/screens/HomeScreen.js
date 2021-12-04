@@ -10,6 +10,7 @@ import Spacer from "../components/Spacer";
 import SwipeDeck from "../components/SwipeDeck";
 import Header from "../components/mainFlow/Header";
 import Stoper from "../components/Stoper";
+import Greetings from "../components/mainFlow/Greetings";
 import { colorsMain } from "../styles/colors";
 
 const HomeScreen = ({ navigation }) => {
@@ -60,22 +61,7 @@ const HomeScreen = ({ navigation }) => {
           style={styles.container}
         >
           <View>
-            <View style={styles.row}>
-              <Avatar
-                rounded
-                size="large"
-                containerStyle={styles.avatar}
-                source={{
-                  uri: "https://images.generated.photos/hHCTnFYWP99SDS2h1nNRN8EPgD5j4oco54V78LD3jEg/rs:fit:512:512/wm:0.95:sowe:18:18:0.33/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LmNvbmQvMmJkOGRj/Y2QtZDg1NS00ZTEy/LWE0NzAtYjEyNDcz/MzJmYjFlLmpwZw.jpg",
-                }}
-              />
-              <Button
-                type="outline"
-                buttonStyle={{ paddingHorizontal: 20 }}
-                title="Sign out"
-                onPress={signout}
-              />
-            </View>
+            <Greetings user={state.user} />
             <SwipeDeck />
             <SwipeDeck />
           </View>
@@ -95,16 +81,6 @@ const HomeScreen = ({ navigation }) => {
   );
 };
 
-// HomeScreen.navigationOptions = () => {
-//   return {
-//     headerStyle: {
-//       backgroundColor: "hsl(234, 43%, 19%)",
-//     },
-//     headerShown: false,
-//     headerTintColor: "white",
-//   };
-// };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -121,12 +97,6 @@ const styles = StyleSheet.create({
     elevation: 10,
     borderWidth: 2,
     borderColor: "hsl(203, 68%, 27%)",
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    margin: 15,
   },
 });
 

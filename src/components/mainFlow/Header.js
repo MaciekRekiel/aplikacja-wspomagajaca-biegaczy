@@ -40,10 +40,6 @@ const Header = ({
       position: "absolute",
       right: 12,
       bottom: 8,
-      //backgroundColor: "red",
-      // padding: 1,
-      // paddingVertical: 2,
-      // borderRadius: 4,
     },
     rightButtonBorder: {
       padding: 1.5,
@@ -51,12 +47,9 @@ const Header = ({
       borderRadius: 4,
     },
     rightButtonContainer: {
-      //borderColor: "white",
       backgroundColor: colorsMain.backgroundHeader,
-      //borderWidth: 1,
       paddingHorizontal: 12,
       paddingVertical: 6,
-      //borderRadius: 4,
     },
     rightButtonText: {
       fontSize: 18,
@@ -92,6 +85,7 @@ const Header = ({
               background={TouchableNativeFeedback.Ripple(
                 colorsMain.headerButtonBackgroundPrimary
               )}
+              onPress={rightButtonCallback}
             >
               <View style={styles.rightButtonContainer}>
                 <Text style={styles.rightButtonText}>Sign out</Text>
