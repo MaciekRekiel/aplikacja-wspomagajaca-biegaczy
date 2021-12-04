@@ -15,7 +15,7 @@ export const colorsMain = {
   // LinearGradient for card background
   cardBackgroundPrimary: "hsl(231, 62%, 34%)",
   cardBackgroundSecondary: "hsl(231, 66%, 36%)",
-  // General colors
+  // Text colors
   primary: "hsla(200, 77%, 92%, 1)",
   secondary: "hsla(231, 62%, 38%, 1)",
   shadowColor: "hsl(231, 66%, 26%)",

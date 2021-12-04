@@ -1,94 +1,60 @@
-import React, { useContext, useState, useEffect } from "react";
-import { View, ActivityIndicator, StyleSheet } from "react-native";
+import React, { useContext } from "react";
+import { StyleSheet } from "react-native";
 import MapView, { Circle, Polyline } from "react-native-maps";
 import { nightMapTheme } from "../utils/customMapStyles";
-import { Icon } from "react-native-elements";
-import { FontAwesome } from "@expo/vector-icons";
 
-import Spacer from "./Spacer";
 import { Context as LocationContext } from "../context/LocationContext";
+import { colorsMain } from "../styles/colors";
 
-const Map = ({ isFocus, onIconPress }) => {
+const Map = () => {
   const {
-    state: { currentLocation, locations, running, lineDashPattern },
+    state: { currentLocation, locations },
   } = useContext(LocationContext);
 
-  // useEffect(() => {
-  //   if (running) {
-  //     console.log("Set to null");
-  //     setLineDashPatter(null);
-  //   }
-  // }, [running, isFocus]);
-
   if (!currentLocation) {
-    return (
-      <Spacer>
-        <ActivityIndicator size="large" color="#00f" />
-      </Spacer>
-    );
+    return null;
   }
 
   return (
-    <View>
-      <View style={styles.icon}>
-        <Icon
-          reverse
-          name="map-marker"
-          type="font-awesome"
-          color="rgba(73, 151, 253, 1)"
-          onPress={onIconPress}
-        />
-      </View>
-      <MapView
-        style={styles.map}
-        loadingBackgroundColor="hsl(234, 43%, 19%)"
-        customMapStyle={nightMapTheme}
-        initialRegion={{
-          ...currentLocation.coords,
-          latitudeDelta: 0.002,
-          longitudeDelta: 0.002,
-        }}
-        region={{
-          ...currentLocation.coords,
-          latitudeDelta: 0.002,
-          longitudeDelta: 0.002,
-        }}
-        onPress={() => console.log("HA")}
-      >
-        <Circle
-          center={currentLocation.coords}
-          radius={3}
-          strokeColor="rgba(73, 151, 253, 1)"
-          fillColor="rgba(73, 151, 253, 0.3)"
-        />
-        <Polyline
-          strokeColor="rgba(2, 149, 182, 1)"
-          lineDashPattern={lineDashPattern}
-          strokeWidth={6}
-          coordinates={locations.map((loc) => loc.coords)}
-        />
-        <Polyline
-          // lineDashPattern={[1]}
-          lineDashPattern={lineDashPattern}
-          strokeColor="rgba(31, 255, 218, 0.7)"
-          strokeWidth={4}
-          coordinates={locations.map((loc) => loc.coords)}
-        />
-      </MapView>
-    </View>
+    <MapView
+      loadingEnabled
+      style={styles.map}
+      loadingBackgroundColor={colorsMain.backgroundPrimary}
+      customMapStyle={nightMapTheme}
+      initialRegion={{
+        ...currentLocation.coords,
+        latitudeDelta: 0.002,
+        longitudeDelta: 0.002,
+      }}
+      region={{
+        ...currentLocation.coords,
+        latitudeDelta: 0.002,
+        longitudeDelta: 0.002,
+      }}
+    >
+      <Circle
+        center={currentLocation.coords}
+        radius={3}
+        strokeColor="rgba(73, 151, 253, 1)"
+        fillColor="rgba(73, 151, 253, 0.3)"
+      />
+      <Polyline
+        strokeColor="rgba(2, 149, 182, 1)"
+        strokeWidth={6}
+        coordinates={locations.map((loc) => loc.coords)}
+      />
+      <Polyline
+        strokeColor="rgba(31, 255, 218, 0.7)"
+        strokeWidth={4}
+        coordinates={locations.map((loc) => loc.coords)}
+      />
+    </MapView>
   );
 };
 
 const styles = StyleSheet.create({
   map: {
-    position: "relative",
     height: 350,
-  },
-  icon: {
-    position: "absolute",
-    top: 12,
-    right: 12,
-    zIndex: 10,
   },
 });
 

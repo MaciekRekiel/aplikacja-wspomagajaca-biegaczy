@@ -9,8 +9,6 @@ const SET_TIME = "SET_TIME";
 const SET_DISTANCE = "SET_DISTANCE";
 const GRANT_PERMISSIONS = "GRANT_PERMISSIONS";
 const REJECT_PERMISSIONS = "REJECT_PERMISSIONS";
-const ADD_LINE_DASH_PATTERN = "ADD_LINEDASHPATTERN";
-const REMOVE_LINE_DASH_PATTER = "REMOVE_LINEDASHPATTER";
 
 const locationReducer = (state, action) => {
   switch (action.type) {
@@ -19,15 +17,11 @@ const locationReducer = (state, action) => {
     case ADD_LOCATION:
       return { ...state, locations: [...state.locations, action.payload] };
     case START_RUNNING:
-      return { ...state, running: true, lineDashPatter: null };
+      return { ...state, running: true };
     case SET_TIME:
       return { ...state, runningTime: state.runningTime + 1 };
     case STOP_RUNNING:
-      return { ...state, running: false, lineDashPatter: [0] };
-    case ADD_LINE_DASH_PATTERN:
-      return { ...state, lineDashPatter: [0] };
-    case REMOVE_LINE_DASH_PATTER:
-      return { ...state, lineDashPatter: null };
+      return { ...state, running: false };
     case SET_DISTANCE:
       const length = state.locations.length;
       if (length > 1) {
@@ -51,20 +45,6 @@ const locationReducer = (state, action) => {
   }
 };
 
-const addLineDashPattern = (dispatch) => {
-  return () => {
-    dispatch({
-      type: ADD_LINE_DASH_PATTERN,
-    });
-  };
-};
-const removeLineDashPattern = (dispatch) => {
-  return () => {
-    dispatch({
-      type: REMOVE_LINE_DASH_PATTER,
-    });
-  };
-};
 const setTime = (dispatch) => {
   return () => {
     dispatch({
@@ -131,15 +111,12 @@ export const { Provider, Context } = createDataContext(
     setTime,
     grantPermissions,
     rejectPermissions,
-    removeLineDashPattern,
-    addLineDashPattern,
   },
   {
     permissions: null,
     running: false,
     locations: [],
     currentLocation: null,
-    lineDashPatter: [0],
     runningTime: 0,
     distance: 0,
   }

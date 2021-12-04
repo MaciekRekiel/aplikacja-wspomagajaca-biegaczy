@@ -11,29 +11,23 @@ import {
   startLocationUpdatesAsync,
   watchPositionAsync,
 } from "expo-location";
-import Header from "../components/mainFlow/Header";
 
 // REUSABLE COMPONENTS IMPORT
+import { Context as LocationContext } from "../context/LocationContext";
 import Spacer from "../components/Spacer";
 import Column from "../components/Column";
 import Map from "../components/Map";
 import Stoper from "../components/Stoper";
-import { Context as LocationContext } from "../context/LocationContext";
+import Header from "../components/mainFlow/Header";
+import CustomBackground from "../components/mainFlow/CustomBackground";
 
 const RunningScreen = ({ navigation }) => {
-  const [loc, setLoc] = useState(null);
-  useEffect(() => {
-    if (loc) {
-      addLocation(loc, running);
-    }
-  }, [loc]);
   const {
     state: { running, runningTime, distance },
     addLocation,
     startRunning,
     stopRunning,
     setTime,
-    removeLineDashPattern,
   } = useContext(LocationContext);
   const subID = useRef(null);
 
@@ -43,8 +37,7 @@ const RunningScreen = ({ navigation }) => {
       return;
     }
     if (data) {
-      const { locations } = data;
-      setLoc(locations[0]);
+      addLocation(data.locations[0], running);
     }
   });
 
@@ -66,19 +59,6 @@ const RunningScreen = ({ navigation }) => {
       subID.current.remove();
       subID.current = null;
     }
-  };
-
-  // ICON LOCATION FETCHING
-  const getUserLocation = async () => {
-    const subscriber = await watchPositionAsync(
-      {
-        accuracy: Accuracy.BestForNavigation,
-      },
-      (location) => addLocation(location)
-    );
-    setTimeout(() => {
-      subscriber.remove();
-    }, 1000);
   };
 
   // BACKGROUND AND FOREGROUND TRACKING
@@ -121,11 +101,6 @@ const RunningScreen = ({ navigation }) => {
     };
   }, [running]);
 
-  useEffect(() => {
-    // STOPER JEST PROBLEMEM
-    navigation.setParams({ running });
-  }, [running]);
-
   return (
     <>
       <Header
@@ -133,28 +108,14 @@ const RunningScreen = ({ navigation }) => {
         backIcon
         backIconOnPress={() => navigation.navigate("Home")}
       />
-      <StatusBar
-        barStyle="light-content"
-        translucent={true}
-        backgroundColor="transparent"
-      />
-      <LinearGradient
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        colors={["hsl(231, 33%, 16%)", "hsl(218, 69%, 20%)"]}
-        style={styles.container}
-      >
+      <Stoper interval={1000} callback={setTime} show={running} />
+      <CustomBackground>
         <NavigationEvents
-          onDidFocus={() => {
-            if (running) {
-              removeLineDashPattern();
-            }
-          }}
           onWillBlur={() => {
             stopForegroundLocationFetching();
           }}
         />
-        <Stoper interval={1000} callback={setTime} show={running} />
+
         <Spacer>
           <LinearGradient
             start={{ x: 0, y: 0 }}
@@ -167,7 +128,7 @@ const RunningScreen = ({ navigation }) => {
             <Column title="Kcal" value={0} />
           </LinearGradient>
         </Spacer>
-        <Map onIconPress={getUserLocation} />
+        <Map />
         <Spacer>
           {running ? (
             <Button
@@ -191,34 +152,9 @@ const RunningScreen = ({ navigation }) => {
             />
           ) : null}
         </Spacer>
-      </LinearGradient>
+      </CustomBackground>
     </>
   );
-};
-
-RunningScreen.navigationOptions = ({ navigation }) => {
-  const running = navigation.getParam("running");
-  return {
-    title: "Running",
-    headerStyle: {
-      backgroundColor: "hsl(234, 43%, 19%)",
-    },
-    headerShown: false,
-    headerTintColor: "white",
-    //animationEnabled: false,
-    // headerLeft: () => (
-    //   <HeaderBackButton
-    //     onPress={async () => {
-    //       // const running = navigation.getParam("running");
-    //       // const stopStoper = navigation.getParam("stopStoper");
-    //       // if (running) {
-    //       //   stopStoper();
-    //       // }
-    //       navigation.navigate("Home");
-    //     }}
-    //   />
-    // ),
-  };
 };
 
 const styles = StyleSheet.create({

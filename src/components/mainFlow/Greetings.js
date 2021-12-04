@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
+import Line from "../Line";
 import { colorsMain } from "../../styles/colors";
 
 const Greetings = ({ user }) => {
@@ -12,16 +13,22 @@ const Greetings = ({ user }) => {
     return capitalize(word.charAt(0));
   };
 
+  if (!user) {
+    return null;
+  }
+
   return (
-    <View style={styles.row}>
-      <View>
-        <Text style={styles.greetingStyle}>Hello,</Text>
-        <Text style={styles.loginStyle}>{capitalize(user.login)}</Text>
+    <>
+      <View style={styles.row}>
+        <View>
+          <Text style={styles.greetingStyle}>Hello,</Text>
+          <Text style={styles.loginStyle}>{capitalize(user.login)}</Text>
+        </View>
+        <View style={styles.avatarContainer}>
+          <Text style={styles.avatarText}>{firstLetter(user.login)}</Text>
+        </View>
       </View>
-      <View style={styles.avatarContainer}>
-        <Text style={styles.avatarText}>{firstLetter(user.login)}</Text>
-      </View>
-    </View>
+    </>
   );
 };
 
@@ -31,7 +38,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     margin: 15,
-    paddingHorizontal: 20,
+    marginHorizontal: 35,
+    borderBottomColor: colorsMain.secondary,
+    borderBottomWidth: 2,
+    paddingBottom: 16,
+    zIndex: 10,
   },
   avatarContainer: {
     height: 70,
