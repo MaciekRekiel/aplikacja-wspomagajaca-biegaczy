@@ -72,26 +72,28 @@ const Header = ({
         ) : null}
         <Text style={styles.headerText}>{title}</Text>
         <View style={styles.rightButtonPlacement}>
-          <LinearGradient
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.rightButtonBorder}
-            colors={[
-              colorsMain.headerButtonBackgroundPrimary,
-              colorsMain.headerButtonBackgroundSecondary,
-            ]}
-          >
-            <TouchableNativeFeedback
-              background={TouchableNativeFeedback.Ripple(
-                colorsMain.headerButtonBackgroundPrimary
-              )}
-              onPress={rightButtonCallback}
+          {rightButton ? (
+            <LinearGradient
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.rightButtonBorder}
+              colors={[
+                colorsMain.headerButtonBackgroundPrimary,
+                colorsMain.headerButtonBackgroundSecondary,
+              ]}
             >
-              <View style={styles.rightButtonContainer}>
-                <Text style={styles.rightButtonText}>Sign out</Text>
-              </View>
-            </TouchableNativeFeedback>
-          </LinearGradient>
+              <TouchableNativeFeedback
+                background={TouchableNativeFeedback.Ripple(
+                  colorsMain.headerButtonBackgroundPrimary
+                )}
+                onPress={rightButtonCallback}
+              >
+                <View style={styles.rightButtonContainer}>
+                  <Text style={styles.rightButtonText}>Sign out</Text>
+                </View>
+              </TouchableNativeFeedback>
+            </LinearGradient>
+          ) : null}
         </View>
       </View>
     </>

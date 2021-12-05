@@ -4,7 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 
 import { colorsMain } from "../../styles/colors";
 
-const CustomBackground = ({ children }) => {
+const CustomBackground = ({ children, safeAreaSecured }) => {
   return (
     <>
       <StatusBar
@@ -13,6 +13,7 @@ const CustomBackground = ({ children }) => {
         backgroundColor="transparent"
       />
       <ScrollView
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           flexGrow: 1,
         }}
@@ -27,6 +28,7 @@ const CustomBackground = ({ children }) => {
           style={{
             flex: 1,
             justifyContent: "space-between",
+            paddingTop: (safeAreaSecured && 48) || 0,
           }}
         >
           {children}
@@ -34,6 +36,10 @@ const CustomBackground = ({ children }) => {
       </ScrollView>
     </>
   );
+};
+
+CustomBackground.defaultProps = {
+  safeAreaSecured: false,
 };
 
 export default CustomBackground;
