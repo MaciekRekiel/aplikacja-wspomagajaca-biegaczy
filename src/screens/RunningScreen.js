@@ -1,7 +1,6 @@
 // REACT REACT-NATIVE IMPORTS
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { View, StyleSheet, StatusBar, ScrollView } from "react-native";
-import { Button } from "react-native-elements";
 import { NavigationEvents } from "react-navigation";
 import * as TaskManager from "expo-task-manager";
 import { LinearGradient } from "expo-linear-gradient";
@@ -20,6 +19,7 @@ import Map from "../components/Map";
 import Stoper from "../components/Stoper";
 import Header from "../components/mainFlow/Header";
 import CustomBackground from "../components/mainFlow/CustomBackground";
+import Button from "../components/mainFlow/Button";
 
 const RunningScreen = ({ navigation }) => {
   const {

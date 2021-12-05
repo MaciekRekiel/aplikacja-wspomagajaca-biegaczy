@@ -6,6 +6,7 @@ import { Context as AuthContext } from "../context/AuthContext";
 import CustomBackground from "../components/mainFlow/CustomBackground";
 import Avatar from "../components/mainFlow/Avatar";
 import { colorsMain } from "../styles/colors";
+import Button from "../components/mainFlow/Button";
 
 const ProfileScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);

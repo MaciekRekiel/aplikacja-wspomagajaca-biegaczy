@@ -1,17 +1,9 @@
 import React from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  TouchableNativeFeedback,
-  Modal,
-} from "react-native";
+import { View, StyleSheet, Text, TouchableNativeFeedback } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
 import { colorsMain } from "../../styles/colors";
-
-import { SCREEN_WIDTH } from "../../utils/screen";
-import { ScrollView } from "react-native-gesture-handler";
+import ModalEditImage from "./ModalEditImage";
 
 const Avatar = ({ name, size, edit, editCallback, modalVisible }) => {
   const styles = StyleSheet.create({
@@ -55,25 +47,6 @@ const Avatar = ({ name, size, edit, editCallback, modalVisible }) => {
       justifyContent: "center",
       alignItems: "center",
     },
-    modalBackground: {
-      flexGrow: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "rgba(0,0,0,0.5)",
-    },
-    modalBody: {
-      height: 250,
-      width: SCREEN_WIDTH - 50,
-      borderRadius: 16,
-      backgroundColor: "white",
-      justifyContent: "center",
-    },
-    modalButton: {
-      height: 30,
-      backgroundColor: "red",
-      marginHorizontal: 16,
-      borderRadius: 8,
-    },
   });
 
   const capitalize = (word) => {
@@ -109,28 +82,7 @@ const Avatar = ({ name, size, edit, editCallback, modalVisible }) => {
     <View style={styles.avatarContainer}>
       <Text style={styles.avatarText}>{firstLetter(name)}</Text>
       {renderEditButton(edit)}
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        statusBarTranslucent={true}
-      >
-        <View style={styles.modalBackground}>
-          <View style={styles.modalBody}>
-            <TouchableNativeFeedback
-              onPress={() =>
-                setTimeout(() => {
-                  editCallback(false);
-                }, 200)
-              }
-            >
-              <View style={styles.modalButton}>
-                <Text>AAA</Text>
-              </View>
-            </TouchableNativeFeedback>
-          </View>
-        </View>
-      </Modal>
+      <ModalEditImage modalVisible={modalVisible} editCallback={editCallback} />
     </View>
   );
 };

@@ -43,7 +43,6 @@ const Header = ({
     },
     rightButtonBorder: {
       padding: 1.5,
-      paddingVertical: 1.5,
       borderRadius: 4,
     },
     rightButtonContainer: {

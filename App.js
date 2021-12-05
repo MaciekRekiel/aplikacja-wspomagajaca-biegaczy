@@ -12,6 +12,7 @@ import { Entypo } from "@expo/vector-icons";
 import { setNavigator } from "./src/navigationRef";
 import { Provider as AuthProvider } from "./src/context/AuthContext";
 import { Provider as LocationProvider } from "./src/context/LocationContext";
+import { colorsMain } from "./src/styles/colors";
 
 // SCREENS IMPORT
 import SigninScreen from "./src/screens/SigninScreen";
@@ -59,10 +60,10 @@ const switchNavigator = createSwitchNavigator({
     },
     {
       tabBarOptions: {
-        activeTintColor: "hsl(203, 68%, 47%)",
+        activeTintColor: colorsMain.headerButtonBackgroundPrimary,
         style: {
-          borderTopColor: "hsl(203, 68%, 27%)",
-          backgroundColor: "hsl(234, 43%, 19%)",
+          borderTopColor: colorsMain.headerButtonBackgroundPrimary,
+          backgroundColor: colorsMain.backgroundHeader,
         },
       },
     }

@@ -392,5 +392,10 @@ export const { Provider, Context } = createDataContext(
     clearErrors,
     autoLogin,
   },
-  { user: null, token: null, errorMessages: {}, loading: false }
+  {
+    user: null,
+    token: null,
+    errorMessages: {},
+    loading: false,
+  }
 );
