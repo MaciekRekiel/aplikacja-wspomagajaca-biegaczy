@@ -36,7 +36,9 @@ const SignupScreen = ({ navigation }) => {
             iconProps={{ type: "antdesign", name: "user" }}
             value={login}
             onChangeText={setLogin}
-            errorMessage={errors.loginIsEmpty || errors.loginInvalid}
+            errorMessage={
+              errors.loginIsEmpty || errors.loginInvalid || errors.loginExists
+            }
           />
           <Input
             placeholder="Enter email"

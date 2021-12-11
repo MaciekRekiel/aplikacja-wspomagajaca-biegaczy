@@ -4,7 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 
 import { colorsMain } from "../../styles/colors";
 
-const CustomBackground = ({ children, safeAreaSecured }) => {
+const CustomBackground = ({ children, safeAreaSecured, justifyContent }) => {
   return (
     <>
       <StatusBar
@@ -27,7 +27,7 @@ const CustomBackground = ({ children, safeAreaSecured }) => {
           ]}
           style={{
             flex: 1,
-            justifyContent: "space-between",
+            justifyContent,
             paddingTop: (safeAreaSecured && 48) || 0,
           }}
         >
@@ -40,6 +40,7 @@ const CustomBackground = ({ children, safeAreaSecured }) => {
 
 CustomBackground.defaultProps = {
   safeAreaSecured: false,
+  justifyContent: "space-between",
 };
 
 export default CustomBackground;

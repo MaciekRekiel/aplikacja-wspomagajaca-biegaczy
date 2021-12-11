@@ -1,11 +1,22 @@
-import React from "react";
-import { View, StyleSheet, Text, TouchableNativeFeedback } from "react-native";
+import React, { useContext } from "react";
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableNativeFeedback,
+  Image,
+} from "react-native";
 import { Feather } from "@expo/vector-icons";
 
 import { colorsMain } from "../../styles/colors";
 import ModalEditImage from "./ModalEditImage";
+import { Context as AuthContext } from "../../context/AuthContext";
 
 const Avatar = ({ name, size, edit, editCallback, modalVisible }) => {
+  const {
+    state: { avatar },
+  } = useContext(AuthContext);
+
   const styles = StyleSheet.create({
     avatarContainer: {
       height: size,
@@ -77,6 +88,28 @@ const Avatar = ({ name, size, edit, editCallback, modalVisible }) => {
       </View>
     ) : null;
   };
+
+  if (avatar) {
+    return (
+      <View>
+        <Image
+          source={{ uri: avatar }}
+          style={{
+            height: size,
+            width: size,
+            borderRadius: size / 2,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        />
+        {renderEditButton(edit)}
+        <ModalEditImage
+          modalVisible={modalVisible}
+          editCallback={editCallback}
+        />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.avatarContainer}>

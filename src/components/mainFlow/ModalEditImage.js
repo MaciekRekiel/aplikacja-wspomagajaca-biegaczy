@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   StyleSheet,
   View,
@@ -7,11 +7,38 @@ import {
   Text,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import * as ImagePicker from "expo-image-picker";
 
 import { colorsMain } from "../../styles/colors";
 import { SCREEN_WIDTH } from "../../utils/screen";
+import { Context as AuthContext } from "../../context/AuthContext";
 
 const ModalEditImage = ({ modalVisible, editCallback }) => {
+  const {
+    state: { token },
+    editAvatar,
+    uploadAvatar,
+  } = useContext(AuthContext);
+
+  const pickImage = async () => {
+    editCallback(false);
+    const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!granted) {
+      alert("Sorry, we need camera roll permissions to make this work!");
+    }
+    if (granted) {
+      const response = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+      });
+
+      if (!response.cancelled) {
+        editAvatar(response.uri);
+        await uploadAvatar({ token, imageUri: response.uri });
+      }
+    }
+  };
+
   return (
     <Modal
       animationType="fade"
@@ -49,7 +76,7 @@ const ModalEditImage = ({ modalVisible, editCallback }) => {
               </View>
             </TouchableNativeFeedback>
             <TouchableNativeFeedback
-              onPress={() => console.log("To do")}
+              onPress={pickImage}
               background={TouchableNativeFeedback.Ripple(
                 colorsMain.headerButtonBackgroundPrimary
               )}

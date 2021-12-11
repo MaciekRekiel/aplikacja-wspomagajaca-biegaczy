@@ -7,28 +7,84 @@ import CustomBackground from "../components/mainFlow/CustomBackground";
 import Avatar from "../components/mainFlow/Avatar";
 import { colorsMain } from "../styles/colors";
 import Button from "../components/mainFlow/Button";
+import ModalForm from "../components/mainFlow/ModalForm";
 
 const ProfileScreen = ({ navigation }) => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const { state } = useContext(AuthContext);
-  if (!state.user) {
+  const [imageModalVisible, setImageModalVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editPasswordModalVisible, setEditPasswordModalVisible] =
+    useState(false);
+  const {
+    state: { user },
+  } = useContext(AuthContext);
+  if (!user) {
     return null;
   }
 
+  const capitalize = (word) => {
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  };
+
   return (
-    <CustomBackground safeAreaSecured>
-      <View style={styles.row}>
+    <CustomBackground safeAreaSecured justifyContent="flex-start">
+      <View style={styles.firstRow}>
         <Avatar
           size={80}
-          name={state.user.login}
+          name={user.login}
           edit
-          editCallback={setModalVisible}
-          modalVisible={modalVisible}
+          editCallback={setImageModalVisible}
+          modalVisible={imageModalVisible}
         />
         <View style={styles.column}>
-          <Text style={styles.login}>{state.user.login}</Text>
-          <Text style={styles.email}>{state.user.email}</Text>
+          <Text style={styles.login}>{user.login}</Text>
+          <Text style={styles.email}>{user.email}</Text>
         </View>
+      </View>
+      <View style={styles.accountDetails}>
+        <View style={styles.row}>
+          <Text style={styles.textHeader}>Gender:</Text>
+          <Text style={styles.textData}>
+            {user.age ? capitalize(user.gender) : "Not provided"}
+          </Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.textHeader}>Age:</Text>
+          <Text style={styles.textData}>
+            {user.age ? user.age : "Not provided"}
+          </Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.textHeader}>Height:</Text>
+          <Text style={styles.textData}>
+            {user.height ? `${user.height} cm` : "Not provided"}
+          </Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.textHeader}>Weight:</Text>
+          <Text style={styles.textData}>
+            {user.weight ? `${user.weight} kg` : "Not provided"}
+          </Text>
+        </View>
+        <View>
+          <Button
+            title="Edit Personal Info"
+            onPress={() => setEditModalVisible(true)}
+          />
+          <ModalForm
+            modalVisible={editModalVisible}
+            setShowFormModal={setEditModalVisible}
+          />
+        </View>
+      </View>
+      <View style={styles.passwordView}>
+        <Text style={styles.textHeader}>Change Password</Text>
+        <Text style={styles.textParagraph}>
+          In order to change password, click following button
+        </Text>
+        <Button
+          title="Edit Password"
+          onPress={() => setEditPasswordModalVisible(true)}
+        />
       </View>
     </CustomBackground>
   );
@@ -42,13 +98,48 @@ ProfileScreen.navigationOptions = {
 };
 
 const styles = StyleSheet.create({
-  row: {
-    marginHorizontal: 35,
+  firstRow: {
+    marginHorizontal: 24,
     paddingVertical: 16,
     flexDirection: "row",
     alignItems: "center",
     borderBottomColor: colorsMain.secondary,
     borderBottomWidth: 2,
+  },
+  accountDetails: {
+    borderColor: colorsMain.secondary,
+    borderBottomWidth: 2,
+    paddingBottom: 16,
+    marginHorizontal: 24,
+  },
+  passwordView: {
+    marginTop: 16,
+    borderColor: colorsMain.secondary,
+    borderBottomWidth: 2,
+    marginHorizontal: 24,
+    paddingBottom: 16,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 12,
+  },
+  textHeader: {
+    color: colorsMain.primary,
+    fontSize: 24,
+    fontWeight: "700",
+  },
+  textData: {
+    color: colorsMain.primary,
+    fontSize: 24,
+    fontWeight: "500",
+    marginLeft: 16,
+  },
+  textParagraph: {
+    color: colorsMain.primary,
+    fontSize: 24,
+    marginVertical: 12,
+    fontWeight: "500",
   },
   column: {
     flex: 1,

@@ -45,7 +45,7 @@ const ModalInitialAsk = ({ modalVisible, setShowModal, setShowFormModal }) => {
               onPress={() =>
                 setTimeout(() => {
                   setShowModal(false);
-                }, 200)
+                }, 150)
               }
               background={TouchableNativeFeedback.Ripple(
                 colorsMain.headerButtonBackgroundPrimary
@@ -61,8 +61,8 @@ const ModalInitialAsk = ({ modalVisible, setShowModal, setShowFormModal }) => {
                   setShowModal(false);
                   setTimeout(() => {
                     setShowFormModal(true);
-                  }, 300);
-                }, 200);
+                  }, 150);
+                }, 150);
               }}
               background={TouchableNativeFeedback.Ripple(
                 colorsMain.headerButtonBackgroundPrimary

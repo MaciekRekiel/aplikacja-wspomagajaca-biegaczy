@@ -39,7 +39,7 @@ const HomeScreen = ({ navigation }) => {
       const modalWasShown = await AsyncStorage.getItem("modalWasShown");
 
       // NEGACJA !modalWasShown zeby dzialalo
-      if (modalWasShown) {
+      if (!modalWasShown) {
         await AsyncStorage.setItem("modalWasShown", "1");
         setShowModal(true);
       }

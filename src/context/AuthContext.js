@@ -1,6 +1,8 @@
 import { Platform, ToastAndroid } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import _ from "lodash";
+import { Buffer } from "buffer";
+import { decode as atob, encode as btoa } from "base-64";
 
 import createDataContext from "./createDataContext";
 import serverInstance from "../apis/server";
@@ -12,17 +14,25 @@ const ADD_ERROR = "ADD_ERROR";
 const CLEAR_ERROR = "CLEAR_ERROR";
 const ADD_LOADING = "ADD_LOADING";
 const REMOVE_LOADING = "REMOVE_LOADING";
+const EDIT_PERSONAL_INFO = "EDIT_PERSONAL_INFO";
+const EDIT_AVATAR = "EDIT_AVATAR";
 
 const authReducer = (state, action) => {
   switch (action.type) {
     case SIGNIN:
+      // NIE WIEM CO MA MTUTAJ ZROBIĆ
       return {
         user: action.payload.user,
         token: action.payload.token,
+        avatar: null, // ?????????????????
         errorMessages: {},
       };
     case SIGNOUT:
-      return { user: null, token: null, errorMessages: {} };
+      return { user: null, token: null, avatar: null, errorMessages: {} };
+    case EDIT_PERSONAL_INFO:
+      return { ...state, user: action.payload.user };
+    case EDIT_AVATAR:
+      return { ...state, avatar: action.payload.imageUri };
     case ADD_ERROR:
       return { ...state, loading: false, errorMessages: { ...action.payload } };
     case CLEAR_ERROR:
@@ -34,6 +44,111 @@ const authReducer = (state, action) => {
     default:
       return state;
   }
+};
+
+const uploadAvatar = (dispatch) => {
+  return async ({ token, imageUri }) => {
+    const formData = new FormData();
+    formData.append("avatar", {
+      name: `${new Date()}_avatar`,
+      uri: imageUri,
+      type: "image/jpg",
+    });
+    try {
+      console.log(formData);
+      await serverInstance.patch("/users/avatar", formData, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      // const responseUser = await serverInstance.get("/users/me", {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //   },
+      // });
+      // dispatch({
+      //   type: EDIT_PERSONAL_INFO,
+      //   payload: { user: responseUser.data.user },
+      // });
+      // return true;
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
+};
+const editAvatar = (dispatch) => {
+  return (imageUri) => {
+    dispatch({
+      type: EDIT_AVATAR,
+      payload: { imageUri },
+    });
+  };
+};
+const editPersonalInfo = (dispatch) => {
+  return async ({ token, gender = "", age = "", height = "", weight = "" }) => {
+    dispatch({
+      type: CLEAR_ERROR,
+    });
+    const errorMessages = {};
+    gender = gender.trim();
+    age = age.trim();
+    height = height.trim();
+    weight = weight.trim();
+    if (!age) {
+      errorMessages.ageIsEmpty = "You must enter your age";
+    }
+    if (!height) {
+      errorMessages.heightIsEmpty = "You must enter your height";
+    }
+    if (!weight) {
+      errorMessages.weightIsEmpty = "You must enter your weight";
+    }
+
+    if (_.isEmpty(errorMessages)) {
+      try {
+        console.log(token);
+        age = parseInt(age);
+        height = parseInt(height);
+        weight = parseInt(weight);
+        await serverInstance.patch(
+          "/users/personal",
+          {
+            gender,
+            age,
+            height,
+            weight,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const responseUser = await serverInstance.get("/users/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        dispatch({
+          type: EDIT_PERSONAL_INFO,
+          payload: { user: responseUser.data.user },
+        });
+        return true;
+      } catch (error) {
+        dispatch({
+          type: ADD_ERROR,
+          payload: errorMessages,
+        });
+      }
+    } else {
+      dispatch({
+        type: ADD_ERROR,
+        payload: errorMessages,
+      });
+    }
+  };
 };
 
 const autoLogin = (dispatch) => {
@@ -136,6 +251,7 @@ const signup = (dispatch) => {
         dispatch({
           type: REMOVE_LOADING,
         });
+        console.log(error.response.data.errorMessages);
         dispatch({
           type: ADD_ERROR,
           payload: error.response.data.errorMessages,
@@ -379,6 +495,7 @@ const signout = (dispatch) => {
     navigate("Signin");
   };
 };
+
 export const { Provider, Context } = createDataContext(
   authReducer,
   {
@@ -391,10 +508,14 @@ export const { Provider, Context } = createDataContext(
     signout,
     clearErrors,
     autoLogin,
+    editPersonalInfo,
+    editAvatar,
+    uploadAvatar,
   },
   {
     user: null,
     token: null,
+    avatar: null,
     errorMessages: {},
     loading: false,
   }
