@@ -1,12 +1,11 @@
 import { Platform, ToastAndroid } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import _ from "lodash";
-import { Buffer } from "buffer";
-import { decode as atob, encode as btoa } from "base-64";
 
 import createDataContext from "./createDataContext";
 import serverInstance from "../apis/server";
 import { navigate } from "../navigationRef";
+import { arrayBufferToBase64 } from "../utils/arrayBufferToBase64";
 
 const SIGNIN = "SIGNIN";
 const SIGNOUT = "SIGNOUT";
@@ -20,11 +19,12 @@ const EDIT_AVATAR = "EDIT_AVATAR";
 const authReducer = (state, action) => {
   switch (action.type) {
     case SIGNIN:
-      // NIE WIEM CO MA MTUTAJ ZROBIĆ
       return {
         user: action.payload.user,
         token: action.payload.token,
-        avatar: null, // ?????????????????
+        avatar: `data:image/jpg;base64,${arrayBufferToBase64(
+          action.payload.user.avatar.data.data
+        )}`,
         errorMessages: {},
       };
     case SIGNOUT:
@@ -51,7 +51,7 @@ const uploadAvatar = (dispatch) => {
     const formData = new FormData();
     formData.append("avatar", {
       name: `${new Date()}_avatar`,
-      uri: imageUri,
+      uri: imageUri, // String
       type: "image/jpg",
     });
     try {
@@ -63,16 +63,6 @@ const uploadAvatar = (dispatch) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      // const responseUser = await serverInstance.get("/users/me", {
-      //   headers: {
-      //     Authorization: `Bearer ${token}`,
-      //   },
-      // });
-      // dispatch({
-      //   type: EDIT_PERSONAL_INFO,
-      //   payload: { user: responseUser.data.user },
-      // });
-      // return true;
     } catch (error) {
       console.log(error.response.data);
     }
