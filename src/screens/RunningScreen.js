@@ -13,6 +13,7 @@ import {
 
 // REUSABLE COMPONENTS IMPORT
 import { Context as LocationContext } from "../context/LocationContext";
+import { Context as AuthContext } from "../context/AuthContext";
 import Spacer from "../components/Spacer";
 import Column from "../components/Column";
 import Map from "../components/Map";
@@ -22,12 +23,19 @@ import CustomBackground from "../components/mainFlow/CustomBackground";
 import Button from "../components/mainFlow/Button";
 
 const RunningScreen = ({ navigation }) => {
+  const [reset, setReset] = useState(false);
   const {
-    state: { running, runningTime, distance },
+    state: { token, user },
+    fetchStats,
+  } = useContext(AuthContext);
+  const {
+    state: { running, runningTime, distance, locations, burnedCalories },
     addLocation,
     startRunning,
     stopRunning,
     setTime,
+    uploadRoute,
+    resetStats,
   } = useContext(LocationContext);
   const subID = useRef(null);
 
@@ -37,7 +45,7 @@ const RunningScreen = ({ navigation }) => {
       return;
     }
     if (data) {
-      addLocation(data.locations[0], running);
+      addLocation(data.locations[0], running, user);
     }
   });
 
@@ -67,7 +75,7 @@ const RunningScreen = ({ navigation }) => {
     await startLocationUpdatesAsync("TASK_FETCH_LOCATION", {
       accuracy: Accuracy.BestForNavigation,
       timeInterval: 1000,
-      distanceInterval: 2,
+      //distanceInterval: 2,
       foregroundService: {
         notificationTitle: "Using your location",
         notificationBody:
@@ -91,15 +99,66 @@ const RunningScreen = ({ navigation }) => {
     return `${minValue}:${secValue}`;
   };
 
+  const renderDistance = () => {
+    let kmValue = distance / 1000;
+    kmValue = kmValue.toFixed(2);
+    return kmValue;
+  };
+
+  const renderButtons = () => {
+    if (reset) {
+      return (
+        <>
+          <Button
+            title="Reset"
+            onPress={() => {
+              resetStats();
+              setReset(false);
+            }}
+          />
+          <Button
+            title="Save The Session"
+            onPress={async () => {
+              uploadRoute({
+                token,
+                runningTime,
+                distance,
+                burnedCalories,
+                route: locations,
+              });
+              resetStats();
+              setReset(false);
+              await fetchStats();
+            }}
+          />
+        </>
+      );
+    }
+    if (running) {
+      return (
+        <Button
+          title="Stop"
+          onPress={() => {
+            stopTrackingLocation();
+            setReset(true);
+          }}
+        />
+      );
+    }
+    if (!running && !reset) {
+      return <Button title="Start" onPress={startTrackingLocation} />;
+    }
+  };
+
   // INITIAL FOREGROUND FETCHING
   useEffect(() => {
-    if (!running) {
+    if (!running && !reset) {
       startForegroundLocationFetching();
     }
     return () => {
       stopForegroundLocationFetching();
     };
-  }, [running]);
+  }, [running, reset]);
 
   return (
     <>
@@ -123,13 +182,14 @@ const RunningScreen = ({ navigation }) => {
             colors={["hsl(203, 68%, 30%)", "hsl(203, 68%, 37%)"]}
             style={styles.card}
           >
-            <Column title="KM" value={distance} />
+            <Column title="KM" value={renderDistance()} />
             <Column title="Czas" value={renderTime()} />
-            <Column title="Kcal" value={0} />
+            <Column title="Kcal" value={burnedCalories.toFixed(1)} />
           </LinearGradient>
         </Spacer>
         <Map />
-        <Spacer>
+        {renderButtons()}
+        {/* <Spacer>
           {running ? (
             <Button
               type="outline"
@@ -148,10 +208,18 @@ const RunningScreen = ({ navigation }) => {
             <Button
               type="outline"
               title="Save The Session"
-              onPress={() => console.log("Zapisuje")}
+              onPress={() => {
+                uploadRoute({
+                  token,
+                  runningTime,
+                  distance,
+                  burnedCalories,
+                  route: locations,
+                });
+              }}
             />
           ) : null}
-        </Spacer>
+        </Spacer> */}
       </CustomBackground>
     </>
   );

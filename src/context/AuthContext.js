@@ -19,12 +19,19 @@ const EDIT_AVATAR = "EDIT_AVATAR";
 const authReducer = (state, action) => {
   switch (action.type) {
     case SIGNIN:
+      let avatar;
+      if (action.payload.user.avatar) {
+        avatar = `data:image/jpg;base64,${arrayBufferToBase64(
+          action.payload.user.avatar.data.data
+        )}`;
+      } else {
+        avatar = null;
+      }
+
       return {
         user: action.payload.user,
         token: action.payload.token,
-        avatar: `data:image/jpg;base64,${arrayBufferToBase64(
-          action.payload.user.avatar.data.data
-        )}`,
+        avatar,
         errorMessages: {},
       };
     case SIGNOUT:
@@ -46,6 +53,27 @@ const authReducer = (state, action) => {
   }
 };
 
+const fetchStats = (dispatch) => {
+  return async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (token) {
+        const responseUser = await serverInstance.get("/users/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        dispatch({
+          type: SIGNIN,
+          payload: { token, user: responseUser.data.user },
+        });
+        navigate("Home");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
 const uploadAvatar = (dispatch) => {
   return async ({ token, imageUri }) => {
     const formData = new FormData();
@@ -55,7 +83,6 @@ const uploadAvatar = (dispatch) => {
       type: "image/jpg",
     });
     try {
-      console.log(formData);
       await serverInstance.patch("/users/avatar", formData, {
         headers: {
           Accept: "application/json",
@@ -98,7 +125,6 @@ const editPersonalInfo = (dispatch) => {
 
     if (_.isEmpty(errorMessages)) {
       try {
-        console.log(token);
         age = parseInt(age);
         height = parseInt(height);
         weight = parseInt(weight);
@@ -501,6 +527,7 @@ export const { Provider, Context } = createDataContext(
     editPersonalInfo,
     editAvatar,
     uploadAvatar,
+    fetchStats,
   },
   {
     user: null,

@@ -48,6 +48,14 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
+  const renderDeck = (user) => {
+    if (user) {
+      return user.statistics.length > 0 ? (
+        <SwipeDeck stats={user.statistics} />
+      ) : null;
+    }
+  };
+
   // INITIAL PERMISSION REQUEST
   useEffect(() => {
     if (!permissions) {
@@ -62,8 +70,7 @@ const HomeScreen = ({ navigation }) => {
       <CustomBackground>
         <View>
           <Greetings user={state.user} />
-          <SwipeDeck />
-          <SwipeDeck />
+          {renderDeck(state.user)}
         </View>
         <Spacer>
           {permissions ? (
