@@ -333,6 +333,7 @@ const signin = (dispatch) => {
         navigate("Home");
       } catch (error) {
         // Server Validation Errors
+        console.log(error);
         dispatch({
           type: ADD_ERROR,
           payload: error.response.data.errorMessages,
