@@ -7,6 +7,7 @@ const Input = ({
   value,
   onChangeText,
   isNumeric,
+  secureTextEntry,
 }) => {
   const [focus, setFocus] = useState(false);
 
@@ -29,6 +30,7 @@ const Input = ({
         value={value}
         onChangeText={onChangeText}
         placeholderTextColor="white"
+        secureTextEntry={secureTextEntry}
       />
       {errorMessage ? (
         <Text style={styles.errorMessage}>{errorMessage}</Text>
@@ -39,6 +41,7 @@ const Input = ({
 
 Input.defaultProps = {
   isNumer: false,
+  secureTextEntry: false,
 };
 
 const styles = StyleSheet.create({

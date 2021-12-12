@@ -18,8 +18,6 @@ const StatsScreen = ({ navigation }) => {
   } = useContext(AuthContext);
 
   const chartData = (whichData) => {
-    console.log(whichData);
-    console.log(user.statistics[0][whichData]);
     const labels = [
       "Jan",
       "Feb",
@@ -62,6 +60,85 @@ const StatsScreen = ({ navigation }) => {
     return { labels, datasets };
   };
 
+  const renderTime = (time) => {
+    let secValue = time % 60;
+    let minValue = Math.floor(time / 60);
+    let hourValue = Math.floor(time / 3600);
+    minValue < 10 ? (minValue = `0${minValue}`) : null;
+    secValue < 10 ? (secValue = `0${secValue}`) : null;
+    hourValue < 10 ? (hourValue = `0${hourValue}`) : null;
+    return `${hourValue}:${minValue}:${secValue}`;
+  };
+
+  const renderCurrentMonthStats = () => {
+    const values = {
+      sessions: 0,
+      totalTime: 0,
+      distance: 0,
+      caloriesBurned: 0,
+    };
+
+    if (user) {
+      if (user.statistics.length > 0) {
+        user.statistics.forEach((item) => {
+          const index = parseInt(item.date.slice(5, 7)) - 1;
+          if (index === currMonth) {
+            values.sessions += 1;
+            values.totalTime += item.totalTime;
+            values.distance += item.distance;
+            values.caloriesBurned += item.caloriesBurned;
+          }
+        });
+      }
+      return (
+        <Spacer>
+          <View style={styles.card}>
+            <Text h4>Current Month</Text>
+            <View style={styles.cardContent}>
+              <Column title="Sessions" value={values.sessions} />
+              <Column title="Time" value={renderTime(values.totalTime)} />
+              <Column title="Km" value={(values.distance / 1000).toFixed(2)} />
+              <Column title="Kcal" value={values.caloriesBurned.toFixed(1)} />
+            </View>
+          </View>
+        </Spacer>
+      );
+    }
+  };
+
+  const renderOfAllTimeStats = () => {
+    const values = {
+      sessions: 0,
+      totalTime: 0,
+      distance: 0,
+      caloriesBurned: 0,
+    };
+
+    if (user) {
+      if (user.statistics.length > 0) {
+        user.statistics.forEach((item) => {
+          values.sessions += 1;
+          values.totalTime += item.totalTime;
+          values.distance += item.distance;
+          values.caloriesBurned += item.caloriesBurned;
+        });
+      }
+      return (
+        <Spacer>
+          <View style={styles.card}>
+            <Text h4>Current Month</Text>
+            <View style={styles.cardContent}>
+              <Column title="Sessions" value={values.sessions} />
+              <Column title="Time" value={renderTime(values.totalTime)} />
+              <Column title="Km" value={(values.distance / 1000).toFixed(2)} />
+              <Column title="Kcal" value={values.caloriesBurned.toFixed(1)} />
+            </View>
+          </View>
+        </Spacer>
+      );
+    }
+  };
+
   const renderChart = (suffix, whichData, callback) => {
     return (
       <LineChart
@@ -97,28 +174,8 @@ const StatsScreen = ({ navigation }) => {
 
   return (
     <CustomBackground safeAreaSecured justifyContent="flex-start">
-      <Spacer>
-        <View style={styles.card}>
-          <Text h4>Current Month</Text>
-          <View style={styles.cardContent}>
-            <Column title="Sessions" value={0} />
-            <Column title="Time" value={0} />
-            <Column title="Km" value={0} />
-            <Column title="Kcal" value={0} />
-          </View>
-        </View>
-      </Spacer>
-      <Spacer>
-        <View style={styles.card}>
-          <Text h4>Of All Time</Text>
-          <View style={styles.cardContent}>
-            <Column title="Sessions" value={0} />
-            <Column title="Time" value={0} />
-            <Column title="Km" value={0} />
-            <Column title="Kcal" value={0} />
-          </View>
-        </View>
-      </Spacer>
+      {renderCurrentMonthStats()}
+      {renderOfAllTimeStats()}
       {renderChart(" km", "distance", chartData)}
       {renderChart(" s", "totalTime", chartData)}
       {renderChart(" Kcal", "caloriesBurned", chartData)}

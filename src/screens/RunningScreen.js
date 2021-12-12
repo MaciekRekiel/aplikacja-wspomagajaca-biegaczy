@@ -119,7 +119,7 @@ const RunningScreen = ({ navigation }) => {
           <Button
             title="Save The Session"
             onPress={async () => {
-              uploadRoute({
+              await uploadRoute({
                 token,
                 runningTime,
                 distance,

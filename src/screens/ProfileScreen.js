@@ -8,6 +8,7 @@ import Avatar from "../components/mainFlow/Avatar";
 import { colorsMain } from "../styles/colors";
 import Button from "../components/mainFlow/Button";
 import ModalForm from "../components/mainFlow/ModalForm";
+import ModalEditPasswordForm from "../components/mainFlow/ModalEditPasswordForm";
 
 const ProfileScreen = ({ navigation }) => {
   const [imageModalVisible, setImageModalVisible] = useState(false);
@@ -84,6 +85,10 @@ const ProfileScreen = ({ navigation }) => {
         <Button
           title="Edit Password"
           onPress={() => setEditPasswordModalVisible(true)}
+        />
+        <ModalEditPasswordForm
+          modalVisible={editPasswordModalVisible}
+          setShowFormModal={setEditPasswordModalVisible}
         />
       </View>
     </CustomBackground>

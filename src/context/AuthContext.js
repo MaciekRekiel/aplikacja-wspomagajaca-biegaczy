@@ -15,6 +15,7 @@ const ADD_LOADING = "ADD_LOADING";
 const REMOVE_LOADING = "REMOVE_LOADING";
 const EDIT_PERSONAL_INFO = "EDIT_PERSONAL_INFO";
 const EDIT_AVATAR = "EDIT_AVATAR";
+const ADD_STATS = "ADD_STATS";
 
 const authReducer = (state, action) => {
   switch (action.type) {
@@ -34,6 +35,8 @@ const authReducer = (state, action) => {
         avatar,
         errorMessages: {},
       };
+    case ADD_STATS:
+      return { ...state, user: action.payload.user };
     case SIGNOUT:
       return { user: null, token: null, avatar: null, errorMessages: {} };
     case EDIT_PERSONAL_INFO:
@@ -53,6 +56,61 @@ const authReducer = (state, action) => {
   }
 };
 
+const editPassword = (dispatch) => {
+  return async ({
+    token,
+    currentPass = "",
+    newPassword = "",
+    confirmPassword = "",
+  }) => {
+    dispatch({
+      type: CLEAR_ERROR,
+    });
+    const errorMessages = {};
+    currentPass = currentPass.trim();
+    newPassword = newPassword.trim();
+    confirmPassword = confirmPassword.trim();
+    if (!currentPass) {
+      errorMessages.currentPassIsEmpty = "You must enter your current password";
+    }
+    if (!newPassword) {
+      errorMessages.newPasswordIsEmpty = "You must enter your new password";
+    }
+    if (!confirmPassword) {
+      errorMessages.confirmPasswordIsEmpty =
+        "You must enter your confirm password";
+    }
+    if (_.isEmpty(errorMessages)) {
+      try {
+        await serverInstance.patch(
+          "/users/change-password-authenticated",
+          {
+            currentPassword: currentPass,
+            newPassword,
+            confirmPassword,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        return true;
+      } catch (error) {
+        console.log(error.response.data);
+        dispatch({
+          type: ADD_ERROR,
+          payload: errorMessages,
+        });
+      }
+    } else {
+      dispatch({
+        type: ADD_ERROR,
+        payload: errorMessages,
+      });
+    }
+  };
+};
 const fetchStats = (dispatch) => {
   return async () => {
     try {
@@ -64,8 +122,8 @@ const fetchStats = (dispatch) => {
           },
         });
         dispatch({
-          type: SIGNIN,
-          payload: { token, user: responseUser.data.user },
+          type: ADD_STATS,
+          payload: { user: responseUser.data.user },
         });
         navigate("Home");
       }
@@ -166,7 +224,6 @@ const editPersonalInfo = (dispatch) => {
     }
   };
 };
-
 const autoLogin = (dispatch) => {
   return async () => {
     try {
@@ -193,7 +250,6 @@ const autoLogin = (dispatch) => {
     }
   };
 };
-
 const clearErrors = (dispatch) => {
   return () => {
     dispatch({
@@ -201,7 +257,6 @@ const clearErrors = (dispatch) => {
     });
   };
 };
-
 const signup = (dispatch) => {
   return async ({
     login = "",
@@ -282,7 +337,6 @@ const signup = (dispatch) => {
     }
   };
 };
-
 const signin = (dispatch) => {
   return async ({ login = "", password = "" }) => {
     dispatch({
@@ -348,7 +402,6 @@ const signin = (dispatch) => {
     }
   };
 };
-
 const resendResetCode = () => {
   return async ({ email }) => {
     try {
@@ -362,7 +415,6 @@ const resendResetCode = () => {
     }
   };
 };
-
 const forgotPassword = (dispatch) => {
   return async ({ email = "" }) => {
     email = email.trim().toLowerCase();
@@ -402,7 +454,6 @@ const forgotPassword = (dispatch) => {
     }
   };
 };
-
 const validateResetCode = (dispatch) => {
   return async ({ email = "", resetCode = "" }) => {
     resetCode = resetCode.trim();
@@ -444,7 +495,6 @@ const validateResetCode = (dispatch) => {
     }
   };
 };
-
 const resetPassword = (dispatch) => {
   return async ({ password = "", confirmPassword = "", token = "" }) => {
     const errorMessages = {};
@@ -501,7 +551,6 @@ const resetPassword = (dispatch) => {
     }
   };
 };
-
 const signout = (dispatch) => {
   return async () => {
     // Removing token from state and async storage
@@ -529,6 +578,7 @@ export const { Provider, Context } = createDataContext(
     editAvatar,
     uploadAvatar,
     fetchStats,
+    editPassword,
   },
   {
     user: null,
