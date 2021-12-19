@@ -9,6 +9,7 @@ const SwipeDeck = ({ stats }) => {
       return (
         <StatsDeckItem
           key={stat._id}
+          id={stat._id}
           date={stat.date.slice(0, 10)}
           distance={stat.distance}
           totalTime={stat.totalTime}

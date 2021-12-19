@@ -6,7 +6,7 @@ import { createBottomTabNavigator } from "react-navigation-tabs";
 import { Animated, Easing } from "react-native";
 
 // ICONS
-import { Entypo } from "@expo/vector-icons";
+import { Entypo, FontAwesome } from "@expo/vector-icons";
 
 // UTILS
 import { setNavigator } from "./src/navigationRef";
@@ -27,16 +27,33 @@ import ForgotPasswordScreen from "./src/screens/ForgotPasswordScreens/ForgotPass
 import ConfirmResetPasswordScreen from "./src/screens/ForgotPasswordScreens/ConfirmResetPasswordScreen";
 import ResetPasswordScreen from "./src/screens/ForgotPasswordScreens/ResetPasswordScreen";
 import ResetPasswordSuccessfulScreen from "./src/screens/ForgotPasswordScreens/ResetPasswordSuccessfulScreen";
+import RunDetailsScreen from "./src/screens/RunDetailsScreen";
+import RunDetailsStatsScreen from "./src/screens/RunDetailsStatsScreen";
+import AllStatsScreen from "./src/screens/AllStatsScreen";
 
 // HOME SCREEN
 const Home = createSwitchNavigator({
   Home: HomeScreen,
   Running: RunningScreen,
+  RunDetail: RunDetailsScreen,
 });
 Home.navigationOptions = {
   title: "Home",
   tabBarIcon: ({ tintColor }) => {
     return <Entypo name="home" size={20} color={tintColor} />;
+  },
+};
+
+const Stats = createSwitchNavigator({
+  Stats: StatsScreen,
+  RunDetailStats: RunDetailsStatsScreen,
+  AllStats: AllStatsScreen,
+});
+
+Stats.navigationOptions = {
+  title: "Statistics",
+  tabBarIcon: ({ tintColor }) => {
+    return <FontAwesome name="bar-chart" size={20} color={tintColor} />;
   },
 };
 
@@ -55,15 +72,15 @@ const switchNavigator = createSwitchNavigator({
     {
       Home,
       Profile: ProfileScreen,
-      Stats: StatsScreen,
+      Stats,
       Events: EventsScreen,
     },
     {
       tabBarOptions: {
-        activeTintColor: colorsMain.headerButtonBackgroundPrimary,
+        activeTintColor: colorsMain.headerColor,
         style: {
-          borderTopColor: colorsMain.headerButtonBackgroundPrimary,
-          backgroundColor: colorsMain.backgroundHeader,
+          borderTopColor: colorsMain.headerBackground,
+          backgroundColor: colorsMain.headerBackground,
         },
       },
     }

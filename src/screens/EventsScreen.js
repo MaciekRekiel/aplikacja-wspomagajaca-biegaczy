@@ -1,31 +1,77 @@
-import React from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import React, { useState, useEffect, useContext } from "react";
+import { View, StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
+import {
+  reverseGeocodeAsync,
+  getCurrentPositionAsync,
+  Accuracy,
+} from "expo-location";
 
+import { Context as LocationContext } from "../context/LocationContext";
+import { Context as AuthContext } from "../context/AuthContext";
+import CustomBackground from "../components/mainFlow/CustomBackground";
 import SearchBar from "../components/SearchBar";
-import Card from "../components/Card";
+import serverInstance from "../apis/server";
 
 const EventsScreen = ({ navigation }) => {
-  const data = [
-    { title: "Title 1", subtitle: "Subtitle 1" },
-    { title: "Title 2", subtitle: "Subtitle 2" },
-    { title: "Title 3", subtitle: "Subtitle 3" },
-    { title: "Title 4", subtitle: "Subtitle 4" },
-    { title: "Title 5", subtitle: "Subtitle 5" },
-    { title: "Title 6", subtitle: "Subtitle 6" },
-    { title: "Title 7", subtitle: "Subtitle 7" },
-  ];
+  const {
+    state: { token },
+  } = useContext(AuthContext);
+  const {
+    state: { permissions, currentLocation },
+  } = useContext(LocationContext);
+
+  const [loading, setLoading] = useState(true);
+
+  const searchForRecommended = async (currentLocation) => {
+    let location, response;
+    if (!currentLocation) {
+      response = await getCurrentPositionAsync({
+        accuracy: Accuracy.BestForNavigation,
+      });
+      location = {
+        latitude: response.coords.latitude,
+        longitude: response.coords.longitude,
+      };
+    } else {
+      location = {
+        latitude: currentLocation.coords.latitude,
+        longitude: currentLocation.coords.longitude,
+      };
+    }
+    response = await reverseGeocodeAsync(location);
+    const query = {
+      city: "Gródki",
+    };
+    try {
+      response = await serverInstance.get("/events", {
+        params: {
+          ...query,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      response.data.forEach((a) => {
+        console.log(a.name, a.address);
+      });
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
+
+  useEffect(() => {
+    if (permissions) {
+      searchForRecommended(currentLocation);
+    }
+  }, []);
 
   return (
-    <SafeAreaView>
-      <ScrollView>
-        <SearchBar />
-        <Card title="My Events" data={data} />
-        <Card title="Recommended Events" data={data} />
-        <Card title="Finished Events" />
-      </ScrollView>
-    </SafeAreaView>
+    <CustomBackground safeAreaSecured justifyContent="flex-start">
+      <SearchBar />
+      <Text>Aaaaaaaaaaaaaaaaaa</Text>
+    </CustomBackground>
   );
 };
 

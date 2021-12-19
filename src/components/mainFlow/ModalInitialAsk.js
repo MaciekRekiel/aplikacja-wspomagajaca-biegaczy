@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     minHeight: 48,
     minWidth: 100,
     backgroundColor: "transparent",
-    borderColor: colorsMain.headerButtonBackgroundPrimary,
+    borderColor: colorsMain.secondary,
     borderWidth: 1.5,
     borderRadius: 4,
     justifyContent: "center",
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     color: "white",
   },
   modalEmpText: {
-    color: colorsMain.headerButtonBackgroundSecondary,
+    color: colorsMain.secondary,
     textShadowColor: colorsMain.shadowColor,
     fontWeight: "700",
     textShadowOffset: { width: 1.875, height: 1.875 },
@@ -123,11 +123,9 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 18,
-    color: colorsMain.headerButtonBackgroundPrimary,
+    color: colorsMain.secondary,
     textShadowColor: colorsMain.shadowColor,
     fontWeight: "700",
-    textShadowOffset: { width: 1.875, height: 1.875 },
-    textShadowRadius: 1,
   },
 });
 

@@ -1,9 +1,8 @@
 // REACT REACT-NATIVE IMPORTS
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { View, StyleSheet, StatusBar, ScrollView } from "react-native";
+import { StyleSheet } from "react-native";
 import { NavigationEvents } from "react-navigation";
 import * as TaskManager from "expo-task-manager";
-import { LinearGradient } from "expo-linear-gradient";
 import {
   Accuracy,
   stopLocationUpdatesAsync,
@@ -14,13 +13,14 @@ import {
 // REUSABLE COMPONENTS IMPORT
 import { Context as LocationContext } from "../context/LocationContext";
 import { Context as AuthContext } from "../context/AuthContext";
-import Spacer from "../components/Spacer";
-import Column from "../components/Column";
 import Map from "../components/Map";
 import Stoper from "../components/Stoper";
 import Header from "../components/mainFlow/Header";
 import CustomBackground from "../components/mainFlow/CustomBackground";
 import Button from "../components/mainFlow/Button";
+import CardRunning from "../components/mainFlow/CardRunning";
+
+// import serverInstance from "../apis/server";
 
 const RunningScreen = ({ navigation }) => {
   const [reset, setReset] = useState(false);
@@ -48,6 +48,40 @@ const RunningScreen = ({ navigation }) => {
       addLocation(data.locations[0], running, user);
     }
   });
+
+  // const addEventTemp = async (token, route) => {
+  //   const name = "Tour de Dom";
+  //   const details = "Takes part in my house";
+  //   const address = {
+  //     country: "Polska",
+  //     city: "Gródki",
+  //     street: "Gródki Pierwsze",
+  //   };
+  //   const date = new Date();
+  //   date.setDate(24);
+  //   const maxParticipants = 10;
+  //   try {
+  //     await serverInstance.post(
+  //       "/events",
+  //       {
+  //         name,
+  //         details,
+  //         address,
+  //         date,
+  //         maxParticipants,
+  //         route,
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     console.log("Done?");
+  //   } catch (error) {
+  //     console.log(error.response.data);
+  //   }
+  // };
 
   // FETCH LOCATION ON SCREEN UP && IS NOT TRACKING
   const startForegroundLocationFetching = async () => {
@@ -90,21 +124,6 @@ const RunningScreen = ({ navigation }) => {
     stopRunning();
   };
 
-  // TIME RENDER HELPER FUNCTION
-  const renderTime = () => {
-    let secValue = runningTime % 60;
-    let minValue = Math.floor(runningTime / 60);
-    minValue < 10 ? (minValue = `0${minValue}`) : null;
-    secValue < 10 ? (secValue = `0${secValue}`) : null;
-    return `${minValue}:${secValue}`;
-  };
-
-  const renderDistance = () => {
-    let kmValue = distance / 1000;
-    kmValue = kmValue.toFixed(2);
-    return kmValue;
-  };
-
   const renderButtons = () => {
     if (reset) {
       return (
@@ -126,6 +145,7 @@ const RunningScreen = ({ navigation }) => {
                 burnedCalories,
                 route: locations,
               });
+              // await addEventTemp(token, locations);
               resetStats();
               setReset(false);
               await fetchStats();
@@ -174,52 +194,13 @@ const RunningScreen = ({ navigation }) => {
             stopForegroundLocationFetching();
           }}
         />
-
-        <Spacer>
-          <LinearGradient
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            colors={["hsl(203, 68%, 30%)", "hsl(203, 68%, 37%)"]}
-            style={styles.card}
-          >
-            <Column title="KM" value={renderDistance()} />
-            <Column title="Czas" value={renderTime()} />
-            <Column title="Kcal" value={burnedCalories.toFixed(1)} />
-          </LinearGradient>
-        </Spacer>
+        <CardRunning
+          distance={distance}
+          runningTime={runningTime}
+          burnedCalories={burnedCalories}
+        />
         <Map />
         {renderButtons()}
-        {/* <Spacer>
-          {running ? (
-            <Button
-              type="outline"
-              title="Stop"
-              onPress={stopTrackingLocation}
-            />
-          ) : (
-            <Button
-              type="outline"
-              title="Start"
-              onPress={startTrackingLocation}
-            />
-          )}
-          <Spacer></Spacer>
-          {runningTime > 0 && !running ? (
-            <Button
-              type="outline"
-              title="Save The Session"
-              onPress={() => {
-                uploadRoute({
-                  token,
-                  runningTime,
-                  distance,
-                  burnedCalories,
-                  route: locations,
-                });
-              }}
-            />
-          ) : null}
-        </Spacer> */}
       </CustomBackground>
     </>
   );

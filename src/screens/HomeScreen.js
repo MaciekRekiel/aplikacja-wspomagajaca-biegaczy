@@ -50,10 +50,15 @@ const HomeScreen = ({ navigation }) => {
 
   const renderDeck = (user) => {
     if (user) {
-      return user.statistics.length > 0 ? (
-        <SwipeDeck stats={user.statistics} />
-      ) : null;
+      // STATS EXIST
+      if (user.statistics.length > 0) {
+        const stats = [...user.statistics];
+        stats.reverse();
+        // 3 lAST RECORDS
+        return <SwipeDeck stats={stats.slice(0, 3)} />;
+      }
     }
+    return null;
   };
 
   // INITIAL PERMISSION REQUEST
@@ -72,19 +77,17 @@ const HomeScreen = ({ navigation }) => {
           <Greetings user={state.user} />
           {renderDeck(state.user)}
         </View>
-        <Spacer>
-          {permissions ? (
-            <Button
-              title="Start Running"
-              onPress={() => navigation.navigate("Running")}
-            />
-          ) : (
-            <Button
-              title="Request Permissions"
-              onPress={getPermissionsAndTryShowModal}
-            />
-          )}
-        </Spacer>
+        {permissions ? (
+          <Button
+            title="Start Running"
+            onPress={() => navigation.navigate("Running")}
+          />
+        ) : (
+          <Button
+            title="Request Permissions"
+            onPress={getPermissionsAndTryShowModal}
+          />
+        )}
         <ModalInitialAsk
           modalVisible={showModal}
           setShowModal={setShowModal}

@@ -20,12 +20,12 @@ const Header = ({
       right: 0,
       bottom: 0,
       elevation: 20,
-      backgroundColor: colorsMain.backgroundHeader,
+      backgroundColor: colorsMain.headerBackground,
       height: 90,
     },
     headerText: {
       position: "absolute",
-      color: colorsMain.headerButtonBackgroundPrimary,
+      color: colorsMain.headerColor,
       bottom: 12,
       left: backIcon ? 54 : 18,
       fontSize: 20,
@@ -40,19 +40,17 @@ const Header = ({
       position: "absolute",
       right: 12,
       bottom: 8,
-    },
-    rightButtonBorder: {
-      padding: 1.5,
+      borderWidth: 2,
       borderRadius: 4,
+      borderColor: colorsMain.headerColor,
     },
     rightButtonContainer: {
-      backgroundColor: colorsMain.backgroundHeader,
       paddingHorizontal: 12,
       paddingVertical: 6,
     },
     rightButtonText: {
       fontSize: 18,
-      color: colorsMain.headerButtonBackgroundSecondary,
+      color: colorsMain.headerColor,
     },
   });
 
@@ -63,37 +61,27 @@ const Header = ({
         {backIcon ? (
           <Icon
             onPress={backIconOnPress}
-            color={colorsMain.headerButtonBackgroundPrimary}
+            color={colorsMain.headerColor}
             type="ionicon"
             name="arrow-back"
             containerStyle={styles.iconStyle}
           />
         ) : null}
         <Text style={styles.headerText}>{title}</Text>
-        <View style={styles.rightButtonPlacement}>
-          {rightButton ? (
-            <LinearGradient
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.rightButtonBorder}
-              colors={[
-                colorsMain.headerButtonBackgroundPrimary,
-                colorsMain.headerButtonBackgroundSecondary,
-              ]}
+        {rightButton ? (
+          <View style={styles.rightButtonPlacement}>
+            <TouchableNativeFeedback
+              background={TouchableNativeFeedback.Ripple(
+                colorsMain.headerColor
+              )}
+              onPress={rightButtonCallback}
             >
-              <TouchableNativeFeedback
-                background={TouchableNativeFeedback.Ripple(
-                  colorsMain.headerButtonBackgroundPrimary
-                )}
-                onPress={rightButtonCallback}
-              >
-                <View style={styles.rightButtonContainer}>
-                  <Text style={styles.rightButtonText}>Sign out</Text>
-                </View>
-              </TouchableNativeFeedback>
-            </LinearGradient>
-          ) : null}
-        </View>
+              <View style={styles.rightButtonContainer}>
+                <Text style={styles.rightButtonText}>Sign out</Text>
+              </View>
+            </TouchableNativeFeedback>
+          </View>
+        ) : null}
       </View>
     </>
   );

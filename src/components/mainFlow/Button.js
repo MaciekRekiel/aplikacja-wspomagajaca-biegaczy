@@ -1,22 +1,12 @@
 import React from "react";
-import {
-  StyleSheet,
-  View,
-  Modal,
-  TouchableNativeFeedback,
-  Text,
-} from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import { StyleSheet, View, TouchableNativeFeedback, Text } from "react-native";
 
 import { colorsMain } from "../../styles/colors";
-import { SCREEN_WIDTH } from "../../utils/screen";
 
 const Button = ({ title, onPress }) => {
   return (
     <TouchableNativeFeedback
-      background={TouchableNativeFeedback.Ripple(
-        colorsMain.headerButtonBackgroundPrimary
-      )}
+      background={TouchableNativeFeedback.Ripple(colorsMain.secondary)}
       onPress={onPress}
     >
       <View style={styles.buttonStyle}>
@@ -37,19 +27,16 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     justifyContent: "center",
     alignItems: "center",
-    borderColor: colorsMain.headerButtonBackgroundPrimary,
-    borderWidth: 1.5,
+    borderColor: colorsMain.secondary,
+    borderWidth: 2,
     marginHorizontal: 16,
     marginVertical: 8,
+    borderRadius: 4,
   },
   buttonTextStyle: {
     fontSize: 20,
-    textShadowColor: colorsMain.shadowColor,
     fontWeight: "700",
-    textShadowOffset: { width: 1.25, height: 1.25 },
-    letterSpacing: 1.25,
-    textShadowRadius: 1,
-    color: colorsMain.headerButtonBackgroundPrimary,
+    color: colorsMain.secondary,
   },
 });
 
