@@ -6,7 +6,7 @@ import { createBottomTabNavigator } from "react-navigation-tabs";
 import { Animated, Easing } from "react-native";
 
 // ICONS
-import { Entypo, FontAwesome } from "@expo/vector-icons";
+import { Entypo, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 
 // UTILS
 import { setNavigator } from "./src/navigationRef";
@@ -30,6 +30,7 @@ import ResetPasswordSuccessfulScreen from "./src/screens/ForgotPasswordScreens/R
 import RunDetailsScreen from "./src/screens/RunDetailsScreen";
 import RunDetailsStatsScreen from "./src/screens/RunDetailsStatsScreen";
 import AllStatsScreen from "./src/screens/AllStatsScreen";
+import EventDetailsEventsScreen from "./src/screens/EventDetailsEventsScreen";
 
 // HOME SCREEN
 const Home = createSwitchNavigator({
@@ -57,6 +58,18 @@ Stats.navigationOptions = {
   },
 };
 
+const Events = createSwitchNavigator({
+  Events: EventsScreen,
+  EventDetailsEvents: EventDetailsEventsScreen,
+});
+
+Events.navigationOptions = {
+  title: "Events",
+  tabBarIcon: ({ tintColor }) => {
+    return <MaterialIcons name="event" size={20} color={tintColor} />;
+  },
+};
+
 // ENTIRE NAVIGATION
 const switchNavigator = createSwitchNavigator({
   authResolve: AuthResolveScreen,
@@ -73,7 +86,7 @@ const switchNavigator = createSwitchNavigator({
       Home,
       Profile: ProfileScreen,
       Stats,
-      Events: EventsScreen,
+      Events,
     },
     {
       tabBarOptions: {

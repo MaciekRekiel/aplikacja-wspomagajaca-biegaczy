@@ -16,9 +16,12 @@ const REMOVE_LOADING = "REMOVE_LOADING";
 const EDIT_PERSONAL_INFO = "EDIT_PERSONAL_INFO";
 const EDIT_AVATAR = "EDIT_AVATAR";
 const ADD_STATS = "ADD_STATS";
+const LOAD_USER = "LOAD_USER";
 
 const authReducer = (state, action) => {
   switch (action.type) {
+    case LOAD_USER:
+      return { ...state, user: action.payload.user };
     case SIGNIN:
       let avatar;
       if (action.payload.user.avatar) {
@@ -56,6 +59,26 @@ const authReducer = (state, action) => {
   }
 };
 
+const loadUser = (dispatch) => {
+  return async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (token) {
+        const responseUser = await serverInstance.get("/users/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        dispatch({
+          type: LOAD_USER,
+          payload: { user: responseUser.data.user },
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
 const editPassword = (dispatch) => {
   return async ({
     token,
@@ -579,6 +602,7 @@ export const { Provider, Context } = createDataContext(
     uploadAvatar,
     fetchStats,
     editPassword,
+    loadUser,
   },
   {
     user: null,

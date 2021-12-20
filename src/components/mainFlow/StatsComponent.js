@@ -179,7 +179,6 @@ StatsComponent.defaultProps = {
 const styles = StyleSheet.create({
   box: {
     minHeight: 148,
-    width: SCREEN_WIDTH - 30,
     margin: 15,
     borderRadius: 8,
     padding: 15,
@@ -206,7 +205,9 @@ const styles = StyleSheet.create({
     color: colorsMain.primary,
   },
   listItem: {
-    borderBottomWidth: 2,
+    marginTop: 8,
+    borderWidth: 0.5,
+    borderRadius: 4,
     borderColor: colorsMain.secondary,
     flexDirection: "row",
     justifyContent: "space-between",

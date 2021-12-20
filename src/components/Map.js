@@ -1,8 +1,9 @@
 import React, { useContext } from "react";
-import { StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Icon } from "react-native";
 import MapView, { Circle, Polyline } from "react-native-maps";
-import { nightMapTheme } from "../utils/customMapStyles";
+import { Feather } from "@expo/vector-icons";
 
+import { nightMapTheme } from "../utils/customMapStyles";
 import { Context as LocationContext } from "../context/LocationContext";
 import { colorsMain } from "../styles/colors";
 
@@ -16,45 +17,61 @@ const Map = () => {
   }
 
   return (
-    <MapView
-      loadingEnabled
-      style={styles.map}
-      loadingBackgroundColor={colorsMain.backgroundPrimary}
-      customMapStyle={nightMapTheme}
-      initialRegion={{
-        ...currentLocation.coords,
-        latitudeDelta: 0.002,
-        longitudeDelta: 0.002,
-      }}
-      region={{
-        ...currentLocation.coords,
-        latitudeDelta: 0.002,
-        longitudeDelta: 0.002,
-      }}
-    >
-      <Circle
-        center={currentLocation.coords}
-        radius={3}
-        strokeColor="rgba(73, 151, 253, 1)"
-        fillColor="rgba(73, 151, 253, 0.3)"
-      />
-      <Polyline
-        strokeColor="rgba(2, 149, 182, 1)"
-        strokeWidth={6}
-        coordinates={locations.map((loc) => loc.coords)}
-      />
-      <Polyline
-        strokeColor="rgba(31, 255, 218, 0.7)"
-        strokeWidth={4}
-        coordinates={locations.map((loc) => loc.coords)}
-      />
-    </MapView>
+    <View>
+      <MapView
+        loadingEnabled
+        style={styles.map}
+        loadingBackgroundColor={colorsMain.backgroundPrimary}
+        customMapStyle={nightMapTheme}
+        initialRegion={{
+          ...currentLocation.coords,
+          latitudeDelta: 0.002,
+          longitudeDelta: 0.002,
+        }}
+        region={{
+          ...currentLocation.coords,
+          latitudeDelta: 0.002,
+          longitudeDelta: 0.002,
+        }}
+      >
+        <Circle
+          center={currentLocation.coords}
+          radius={3}
+          strokeColor="rgba(73, 151, 253, 1)"
+          fillColor="rgba(73, 151, 253, 0.3)"
+        />
+        <Polyline
+          strokeColor="rgba(2, 149, 182, 1)"
+          strokeWidth={6}
+          coordinates={locations.map((loc) => loc.coords)}
+        />
+        <Polyline
+          strokeColor="rgba(31, 255, 218, 0.7)"
+          strokeWidth={4}
+          coordinates={locations.map((loc) => loc.coords)}
+        />
+      </MapView>
+      <TouchableOpacity style={styles.icon} onPress={() => console.log("a")}>
+        <Feather name="map" size={36} color={colorsMain.primary} />
+      </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   map: {
     height: 350,
+  },
+  icon: {
+    position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: colorsMain.cardBackgroundSecondary,
+    height: 64,
+    width: 64,
+    borderRadius: 32,
+    top: 8,
+    right: 8,
   },
 });
 
