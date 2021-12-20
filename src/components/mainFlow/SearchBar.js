@@ -24,11 +24,12 @@ const SearchBar = ({ term, setTerm, token, userEvents }) => {
   const request = debounce(async (text) => {
     // EMPTY
     if (!text) {
+      setSearch([]);
       return;
     }
     // BO TAK
     const query = {
-      city: capitalize(text.toLowerCase()),
+      name: text,
     };
     try {
       const response = await serverInstance.get("/events", {
