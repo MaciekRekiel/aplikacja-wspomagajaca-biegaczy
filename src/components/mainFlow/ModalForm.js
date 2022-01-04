@@ -83,9 +83,7 @@ const ModalForm = ({ modalVisible, setShowFormModal }) => {
                 setShowFormModal(false);
               }, 150)
             }
-            background={TouchableNativeFeedback.Ripple(
-              colorsMain.headerButtonBackgroundPrimary
-            )}
+            background={TouchableNativeFeedback.Ripple(colorsMain.secondary)}
           >
             <View style={styles.modalButton}>
               <Text style={styles.buttonText}>Cancel</Text>
@@ -105,16 +103,11 @@ const ModalForm = ({ modalVisible, setShowFormModal }) => {
               );
               setLoading(false);
             }}
-            background={TouchableNativeFeedback.Ripple(
-              colorsMain.headerButtonBackgroundPrimary
-            )}
+            background={TouchableNativeFeedback.Ripple(colorsMain.secondary)}
           >
             {loading ? (
               <View style={styles.modalButton}>
-                <ActivityIndicator
-                  size={18}
-                  color={colorsMain.headerButtonBackgroundSecondary}
-                />
+                <ActivityIndicator size={18} color={colorsMain.secondary} />
               </View>
             ) : (
               <View style={styles.modalButton}>
@@ -140,9 +133,7 @@ const ModalForm = ({ modalVisible, setShowFormModal }) => {
               setShowFormModal(false);
             }, 150)
           }
-          background={TouchableNativeFeedback.Ripple(
-            colorsMain.headerButtonBackgroundPrimary
-          )}
+          background={TouchableNativeFeedback.Ripple(colorsMain.secondary)}
         >
           <View style={styles.successButton}>
             <Text style={styles.buttonText}>Close</Text>

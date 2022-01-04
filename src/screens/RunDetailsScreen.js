@@ -1,36 +1,23 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
 import MapView, { Polyline } from "react-native-maps";
 
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 
-import { Context as AuthContext } from "../context/AuthContext";
 import Header from "../components/mainFlow/Header";
 import CustomBackground from "../components/mainFlow/CustomBackground";
 import { nightMapTheme } from "../utils/customMapStyles";
 import { colorsMain } from "../styles/colors";
 
-const RunDetailsScreen = ({ navigation }) => {
-  const {
-    state: { user },
-  } = useContext(AuthContext);
+const RunDetailsScreen = ({ navigation: { navigate, getParam } }) => {
   const [data, setData] = useState(null);
-  const [navigateWhere, setNavigateWhere] = useState("Home");
+  const [from, setFrom] = useState("Home");
 
   useEffect(() => {
-    const id = navigation.getParam("id");
-    const navWhere = navigation.getParam("navigateWhere");
-    if (navWhere) {
-      setNavigateWhere(navWhere);
-    }
-    const arr = [...user.statistics];
-    arr.reverse();
-    for (let i = 0; i < arr.length; i++) {
-      if (arr[i]._id === id) {
-        setData(arr[i]);
-        break;
-      }
-    }
+    const stat = getParam("stat");
+    const from = getParam("from");
+    setFrom(from);
+    setData(stat);
   }, []);
 
   const renderTime = (totalTime) => {
@@ -46,11 +33,7 @@ const RunDetailsScreen = ({ navigation }) => {
   if (!data) {
     return (
       <>
-        <Header
-          title="Stats"
-          backIcon
-          backIconOnPress={() => navigation.navigate(navigateWhere)}
-        />
+        <Header title="Stats" backIcon backIconOnPress={() => navigate(from)} />
         <CustomBackground justifyContent={"center"}>
           <ActivityIndicator size={64} color="rgba(211, 74, 74, 1)" />
         </CustomBackground>
@@ -60,11 +43,7 @@ const RunDetailsScreen = ({ navigation }) => {
 
   return (
     <>
-      <Header
-        title="Stats"
-        backIcon
-        backIconOnPress={() => navigation.navigate(navigateWhere)}
-      />
+      <Header title="Stats" backIcon backIconOnPress={() => navigate(from)} />
       <CustomBackground justifyContent="flex-start">
         <Text style={styles.textHeader}>
           {data.date.slice(0, 10)} Session details

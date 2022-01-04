@@ -12,6 +12,7 @@ import { Entypo, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { setNavigator } from "./src/navigationRef";
 import { Provider as AuthProvider } from "./src/context/AuthContext";
 import { Provider as LocationProvider } from "./src/context/LocationContext";
+import { Provider as EventProvider } from "./src/context/EventContext";
 import { colorsMain } from "./src/styles/colors";
 
 // SCREENS IMPORT
@@ -36,7 +37,8 @@ import EventDetailsEventsScreen from "./src/screens/EventDetailsEventsScreen";
 const Home = createSwitchNavigator({
   Home: HomeScreen,
   Running: RunningScreen,
-  RunDetail: RunDetailsScreen,
+  RunDetailHome: RunDetailsScreen,
+  EventDetailsHome: EventDetailsEventsScreen,
 });
 Home.navigationOptions = {
   title: "Home",
@@ -103,10 +105,12 @@ const switchNavigator = createSwitchNavigator({
 const App = createAppContainer(switchNavigator);
 export default () => {
   return (
-    <LocationProvider>
-      <AuthProvider>
-        <App ref={(navigator) => setNavigator(navigator)} />
-      </AuthProvider>
-    </LocationProvider>
+    <EventProvider>
+      <LocationProvider>
+        <AuthProvider>
+          <App ref={(navigator) => setNavigator(navigator)} />
+        </AuthProvider>
+      </LocationProvider>
+    </EventProvider>
   );
 };

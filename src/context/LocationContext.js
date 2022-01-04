@@ -171,7 +171,7 @@ const stopRunning = (dispatch) => {
   };
 };
 const addLocation = (dispatch) => {
-  return (location, running, user) => {
+  return async (location, running, user) => {
     dispatch({
       type: ADD_CURRENT_LOCATION,
       payload: location,

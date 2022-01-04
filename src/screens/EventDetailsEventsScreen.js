@@ -9,30 +9,35 @@ import { nightMapTheme } from "../utils/customMapStyles";
 import Button from "../components/mainFlow/Button";
 import serverInstance from "../apis/server";
 import { Context as AuthContext } from "../context/AuthContext";
+import { Context as EventContext } from "../context/EventContext";
 
 const EventDetailsEventsScreen = ({ navigation }) => {
   const { loadUser } = useContext(AuthContext);
+  const {
+    state: { loading, myEvents },
+    joinEvent,
+    leaveEvent,
+  } = useContext(EventContext);
   const [item, setItem] = useState(null);
   const [destination, setDestination] = useState("");
-  const [token, setToken] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loadingItem, setLoadingItem] = useState(true);
   const [alreadyIn, setAlreadyIn] = useState(false);
 
   useEffect(() => {
     const item = navigation.getParam("item");
-    const token = navigation.getParam("token");
     const from = navigation.getParam("from");
-    const userEvents = navigation.getParam("userEvents");
     setItem(item);
     setDestination(from);
-    setToken(token);
-    if (userEvents.length) {
-      setAlreadyIn(userEvents.includes(item._id));
-    }
-    setLoading(false);
-  }, []);
 
-  if (!item || loading) {
+    const ids = [];
+    myEvents.forEach((event) => {
+      ids.push(event["_id"]);
+    });
+    setAlreadyIn(ids.includes(item._id));
+    setLoadingItem(false);
+  }, [myEvents]);
+
+  if (!item || loadingItem) {
     return (
       <>
         <Header
@@ -46,38 +51,6 @@ const EventDetailsEventsScreen = ({ navigation }) => {
       </>
     );
   }
-
-  const joinEventHandler = async () => {
-    try {
-      await serverInstance.post(
-        `/events/${item._id}/join`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      await loadUser();
-      setAlreadyIn(true);
-    } catch (error) {
-      console.log(error.response.data);
-    }
-  };
-
-  const leaveEventHandler = async () => {
-    try {
-      await serverInstance.delete(`/events/${item._id}/leave`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      await loadUser();
-      setAlreadyIn(false);
-    } catch (error) {
-      console.log(error.response.data);
-    }
-  };
 
   return (
     <>
@@ -123,9 +96,17 @@ const EventDetailsEventsScreen = ({ navigation }) => {
           />
         </MapView>
         {alreadyIn ? (
-          <Button title="Leave The Event" onPress={leaveEventHandler} />
+          <Button
+            loading={loading}
+            title="Leave The Event"
+            onPress={() => leaveEvent(item._id, loadUser)}
+          />
         ) : (
-          <Button title="Take Part In" onPress={joinEventHandler} />
+          <Button
+            loading={loading}
+            title="Take Part In"
+            onPress={() => joinEvent(item._id, loadUser)}
+          />
         )}
       </CustomBackground>
     </>

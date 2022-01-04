@@ -3,7 +3,6 @@ import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
 import { colorsMain } from "../../styles/colors";
-import { SCREEN_WIDTH } from "../../utils/screen";
 import { navigate } from "../../navigationRef";
 import Button from "./Button";
 
@@ -68,7 +67,7 @@ const StatsComponent = ({ title, stats, onlyThisMonth }) => {
   };
 
   const renderList = () => {
-    // RENDER FIRTS 3 OF THEM
+    // RENDER FIRST 3 OF THEM
     let renderItems = [];
     if (!onlyThisMonth) {
       renderItems = stats.slice(0, 3).map((stat) => {
@@ -187,6 +186,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     color: colorsMain.primary,
+  },
+  titleLoading: {
+    fontSize: 28,
+    color: colorsMain.primary,
+    marginBottom: 24,
   },
   row: {
     flexDirection: "row",

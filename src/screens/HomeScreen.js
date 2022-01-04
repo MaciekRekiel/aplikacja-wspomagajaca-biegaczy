@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 import { requestForegroundPermissionsAsync } from "expo-location";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Context as AuthContext } from "../context/AuthContext";
 import { Context as LocationContext } from "../context/LocationContext";
-import Spacer from "../components/Spacer";
+import { Context as EventContext } from "../context/EventContext";
 import SwipeDeck from "../components/SwipeDeck";
 import Header from "../components/mainFlow/Header";
 import Stoper from "../components/Stoper";
@@ -14,57 +14,94 @@ import CustomBackground from "../components/mainFlow/CustomBackground";
 import Button from "../components/mainFlow/Button";
 import ModalInitialAsk from "../components/mainFlow/ModalInitialAsk";
 import ModalForm from "../components/mainFlow/ModalForm";
+import EventsCard from "../components/mainFlow/EventsCard";
 
 const HomeScreen = ({ navigation }) => {
-  const { state, signout } = useContext(AuthContext);
-  const [showModal, setShowModal] = useState(false);
-  const [showFormModal, setShowFormModal] = useState(false);
+  const {
+    state: { user, token },
+    signout,
+  } = useContext(AuthContext);
   const {
     state: { permissions, running },
     grantPermissions,
     rejectPermissions,
     setTime,
   } = useContext(LocationContext);
+  const {
+    state: { myEvents },
+    searchForMyEvents,
+  } = useContext(EventContext);
 
-  const getPermissionsAndTryShowModal = async () => {
-    try {
-      // PERMISSION PART
-      const { granted } = await requestForegroundPermissionsAsync();
-      if (!granted) {
-        rejectPermissions();
-        throw new Error("Location permission not granted");
-      }
-      grantPermissions();
-      // MODAL PART
-      const modalWasShown = await AsyncStorage.getItem("modalWasShown");
+  const [showModal, setShowModal] = useState(false);
+  const [showFormModal, setShowFormModal] = useState(false);
 
-      // NEGACJA !modalWasShown zeby dzialalo
-      if (!modalWasShown) {
-        await AsyncStorage.setItem("modalWasShown", "1");
-        setShowModal(true);
-      }
-    } catch (error) {
-      console.log(error);
+  const getPermissions = async () => {
+    const { granted } = await requestForegroundPermissionsAsync();
+    if (!granted) rejectPermissions();
+    grantPermissions();
+  };
+
+  const tryShowModal = async () => {
+    const modalWasShown = await AsyncStorage.getItem("modalWasShown");
+    if (!modalWasShown) {
+      await AsyncStorage.setItem("modalWasShown", "1");
+      setShowModal(true);
     }
   };
 
-  const renderDeck = (user) => {
+  const getMyEvents = async () => {
     if (user) {
-      // STATS EXIST
+      if (user.events.length) {
+        await searchForMyEvents();
+      }
+    }
+  };
+
+  const getPermissionsAndTryShowModal = async () => {
+    try {
+      await getPermissions(); // PERMISSION PART
+      await getMyEvents(); // MY EVENTS PART
+      await tryShowModal(); // MODAL PART
+    } catch (error) {
+      return;
+    }
+  };
+
+  // RENDERS 3 LAST RECORDS
+  const renderSwipeDeck = () => {
+    if (user) {
       if (user.statistics.length > 0) {
         const stats = [...user.statistics];
         stats.reverse();
-        // 3 lAST RECORDS
         return <SwipeDeck stats={stats.slice(0, 3)} />;
       }
     }
     return null;
   };
 
+  const renderMyEvents = () => {
+    if (user) {
+      return (
+        <EventsCard
+          header="My Events"
+          caption="You don't take part in any event..."
+          from="Home"
+          to="EventDetailsHome"
+          type="my_events"
+          items={myEvents}
+          userEvents={user.events}
+          token={token}
+        />
+      );
+    }
+  };
+
   // INITIAL PERMISSION REQUEST
   useEffect(() => {
     if (!permissions) {
       getPermissionsAndTryShowModal();
+    } else {
+      getMyEvents();
     }
   }, []);
 
@@ -74,8 +111,9 @@ const HomeScreen = ({ navigation }) => {
       <Stoper interval={1000} callback={setTime} show={running} />
       <CustomBackground>
         <View>
-          <Greetings user={state.user} />
-          {renderDeck(state.user)}
+          <Greetings user={user} />
+          {renderSwipeDeck()}
+          {renderMyEvents()}
         </View>
         {permissions ? (
           <Button
@@ -101,24 +139,5 @@ const HomeScreen = ({ navigation }) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "space-between",
-  },
-  card: {
-    backgroundColor: "#EDEDE9",
-    padding: 8,
-    borderRadius: 4,
-    elevation: 5,
-  },
-  avatar: {
-    shadowColor: "#000",
-    elevation: 10,
-    borderWidth: 2,
-    borderColor: "hsl(203, 68%, 27%)",
-  },
-});
 
 export default HomeScreen;

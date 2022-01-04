@@ -1,9 +1,23 @@
 import React from "react";
-import { StyleSheet, View, TouchableNativeFeedback, Text } from "react-native";
+import {
+  StyleSheet,
+  View,
+  TouchableNativeFeedback,
+  Text,
+  ActivityIndicator,
+} from "react-native";
 
 import { colorsMain } from "../../styles/colors";
 
-const Button = ({ title, onPress }) => {
+const Button = ({ title, onPress, loading }) => {
+  if (loading) {
+    return (
+      <View style={styles.buttonStyle}>
+        <ActivityIndicator color={colorsMain.secondary} size={36} />
+      </View>
+    );
+  }
+
   return (
     <TouchableNativeFeedback
       background={TouchableNativeFeedback.Ripple(colorsMain.secondary)}
@@ -19,6 +33,7 @@ const Button = ({ title, onPress }) => {
 Button.defaultProps = {
   title: "Title",
   onPress: () => console.log("Attach on press handler"),
+  loading: false,
 };
 
 const styles = StyleSheet.create({

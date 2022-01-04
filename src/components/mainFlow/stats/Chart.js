@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Text, Dimensions } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 
-import { colorsMain } from "../../styles/colors";
+import { colorsMain } from "../../../styles/colors";
 
 const Chart = ({ data, type }) => {
   const [chartData, setChartData] = useState({
@@ -77,7 +77,7 @@ const Chart = ({ data, type }) => {
   return (
     <LineChart
       data={chartData}
-      height={220}
+      height={280}
       width={Dimensions.get("window").width - 32}
       yAxisSuffix={sufix}
       chartConfig={{
@@ -101,6 +101,7 @@ const Chart = ({ data, type }) => {
 Chart.defaultProps = {
   data: [],
   type: "distance",
+  setLoading: () => {},
 };
 
 const styles = StyleSheet.create({

@@ -1,6 +1,6 @@
 // REACT REACT-NATIVE IMPORTS
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { StyleSheet } from "react-native";
+import { ToastAndroid } from "react-native";
 import { NavigationEvents } from "react-navigation";
 import * as TaskManager from "expo-task-manager";
 import {
@@ -13,23 +13,33 @@ import {
 // REUSABLE COMPONENTS IMPORT
 import { Context as LocationContext } from "../context/LocationContext";
 import { Context as AuthContext } from "../context/AuthContext";
+import { Context as EventContext } from "../context/EventContext";
+import { calculateDistance } from "../utils/calculateDistance";
 import Map from "../components/Map";
 import Stoper from "../components/Stoper";
 import Header from "../components/mainFlow/Header";
 import CustomBackground from "../components/mainFlow/CustomBackground";
 import Button from "../components/mainFlow/Button";
 import CardRunning from "../components/mainFlow/CardRunning";
+import ModalSelectEvent from "../components/mainFlow/running/ModalSelectEvent";
+import ModalEventFinished from "../components/mainFlow/running/ModalEventFinished";
 
-// import serverInstance from "../apis/server";
+// JESZCZE POKAZAĆ JAKIEGOS MODALA ZE UKONCZONO EVENT :)
 
 const RunningScreen = ({ navigation }) => {
-  const [reset, setReset] = useState(false);
   const {
     state: { token, user },
     fetchStats,
   } = useContext(AuthContext);
   const {
-    state: { running, runningTime, distance, locations, burnedCalories },
+    state: {
+      running,
+      runningTime,
+      distance,
+      locations,
+      burnedCalories,
+      currentLocation,
+    },
     addLocation,
     startRunning,
     stopRunning,
@@ -37,51 +47,41 @@ const RunningScreen = ({ navigation }) => {
     uploadRoute,
     resetStats,
   } = useContext(LocationContext);
+  const {
+    state: { eventFinished },
+    doesFinishedEvent,
+    resetFinishedEvent,
+  } = useContext(EventContext);
+
+  const [reset, setReset] = useState(false);
+  const [showModalSelect, setShowModalSelect] = useState(false);
+  const [showModalFinished, setShowModalFinished] = useState(false);
+  const [showEventMarkers, setShowEventMarkers] = useState(true);
+  const [eventRoute, setEventRoute] = useState({
+    choosen: false,
+    route: [],
+    routeDistance: null,
+    eventName: null,
+  });
   const subID = useRef(null);
 
   TaskManager.defineTask("TASK_FETCH_LOCATION", async ({ data, error }) => {
     if (error) {
-      console.log(error.message);
       return;
     }
     if (data) {
-      addLocation(data.locations[0], running, user);
+      await addLocation(data.locations[0], running, user);
+      if (eventRoute.choosen && eventRoute.route.length) {
+        const { routeDistance, route } = eventRoute;
+        doesFinishedEvent(
+          distance,
+          routeDistance,
+          currentLocation,
+          route[route.length - 1]
+        );
+      }
     }
   });
-
-  // const addEventTemp = async (token, route) => {
-  //   const name = "Tour de Dom";
-  //   const details = "Takes part in my house";
-  //   const address = {
-  //     country: "Polska",
-  //     city: "Gródki",
-  //     street: "Gródki Pierwsze",
-  //   };
-  //   const date = new Date();
-  //   date.setDate(24);
-  //   const maxParticipants = 10;
-  //   try {
-  //     await serverInstance.post(
-  //       "/events",
-  //       {
-  //         name,
-  //         details,
-  //         address,
-  //         date,
-  //         maxParticipants,
-  //         route,
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-  //     console.log("Done?");
-  //   } catch (error) {
-  //     console.log(error.response.data);
-  //   }
-  // };
 
   // FETCH LOCATION ON SCREEN UP && IS NOT TRACKING
   const startForegroundLocationFetching = async () => {
@@ -109,7 +109,7 @@ const RunningScreen = ({ navigation }) => {
     await startLocationUpdatesAsync("TASK_FETCH_LOCATION", {
       accuracy: Accuracy.BestForNavigation,
       timeInterval: 1000,
-      //distanceInterval: 2,
+      distanceInterval: 2,
       foregroundService: {
         notificationTitle: "Using your location",
         notificationBody:
@@ -120,7 +120,11 @@ const RunningScreen = ({ navigation }) => {
 
   // STOP FOREGROUND|BACKGROUND TRACKING LOCATION
   const stopTrackingLocation = async () => {
-    await stopLocationUpdatesAsync("TASK_FETCH_LOCATION");
+    try {
+      await stopLocationUpdatesAsync("TASK_FETCH_LOCATION");
+    } catch (error) {
+      console.log(error);
+    }
     stopRunning();
   };
 
@@ -145,7 +149,6 @@ const RunningScreen = ({ navigation }) => {
                 burnedCalories,
                 route: locations,
               });
-              // await addEventTemp(token, locations);
               resetStats();
               setReset(false);
               await fetchStats();
@@ -166,7 +169,33 @@ const RunningScreen = ({ navigation }) => {
       );
     }
     if (!running && !reset) {
-      return <Button title="Start" onPress={startTrackingLocation} />;
+      return (
+        <Button
+          title="Start"
+          onPress={() => {
+            let distanceBetweenPoints = 0;
+            if (eventRoute.choosen) {
+              distanceBetweenPoints = calculateDistance(
+                currentLocation.coords.latitude,
+                currentLocation.coords.longitude,
+                eventRoute.route[eventRoute.route.length - 1].coords.latitude,
+                eventRoute.route[eventRoute.route.length - 1].coords.longitude
+              );
+            }
+
+            // YOU MUST BE AT LEAST 20m AWAY FROM START TO BEGIN THE RUN
+            if (distanceBetweenPoints > 20)
+              ToastAndroid.show(
+                "You must be nearby the start!",
+                ToastAndroid.SHORT
+              );
+            else {
+              setShowEventMarkers(false);
+              startTrackingLocation();
+            }
+          }}
+        />
+      );
     }
   };
 
@@ -180,6 +209,13 @@ const RunningScreen = ({ navigation }) => {
     };
   }, [running, reset]);
 
+  useEffect(() => {
+    if (eventFinished) {
+      stopTrackingLocation();
+      setReset(true);
+    }
+  }, [eventFinished]);
+
   return (
     <>
       <Header
@@ -189,37 +225,35 @@ const RunningScreen = ({ navigation }) => {
       />
       <Stoper interval={1000} callback={setTime} show={running} />
       <CustomBackground>
-        <NavigationEvents
-          onWillBlur={() => {
-            stopForegroundLocationFetching();
-          }}
-        />
+        <NavigationEvents onWillBlur={stopForegroundLocationFetching} />
         <CardRunning
           distance={distance}
           runningTime={runningTime}
           burnedCalories={burnedCalories}
         />
-        <Map />
+        <Map
+          disableIcon={running}
+          selectIconOnPress={setShowModalSelect}
+          removeIconOnPress={setEventRoute}
+          eventRoute={eventRoute}
+          showEventMarkers={showEventMarkers}
+        />
         {renderButtons()}
+        <ModalSelectEvent
+          modalVisible={showModalSelect}
+          setModalVisible={setShowModalSelect}
+          setEventRoute={setEventRoute}
+          setShowEventMarkers={setShowEventMarkers}
+        />
+        <ModalEventFinished
+          modalVisible={showModalFinished}
+          setModalVisible={setShowModalFinished}
+          eventName={eventRoute.eventName}
+          resetFinishedEvent={resetFinishedEvent}
+        />
       </CustomBackground>
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "space-between",
-  },
-  card: {
-    backgroundColor: "#EDEDE9",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    padding: 8,
-    borderRadius: 4,
-    elevation: 5,
-    height: 100,
-  },
-});
 
 export default RunningScreen;

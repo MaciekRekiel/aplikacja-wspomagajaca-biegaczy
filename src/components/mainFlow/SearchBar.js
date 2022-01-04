@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useEffect, useContext, useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -9,41 +9,16 @@ import {
 import { FontAwesome } from "@expo/vector-icons";
 import { debounce } from "lodash";
 
+import { Context as EventContext } from "../../context/EventContext";
 import { colorsMain } from "../../styles/colors";
-import serverInstance from "../../apis/server";
 import { navigate } from "../../navigationRef";
 
 const SearchBar = ({ term, setTerm, token, userEvents }) => {
-  const [search, setSearch] = useState([]);
+  const { state, searchForEvents, clearEvents } = useContext(EventContext);
   const debouceRequest = useCallback((text) => request(text), []);
 
-  const capitalize = (word) => {
-    return word.charAt(0).toUpperCase() + word.slice(1);
-  };
-
   const request = debounce(async (text) => {
-    // EMPTY
-    if (!text) {
-      setSearch([]);
-      return;
-    }
-    // BO TAK
-    const query = {
-      name: text,
-    };
-    try {
-      const response = await serverInstance.get("/events", {
-        params: {
-          ...query,
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setSearch(response.data || []);
-    } catch (error) {
-      console.log(error.response.data);
-    }
+    searchForEvents({ name: text });
   }, 500);
 
   const onTextChange = (text) => {
@@ -52,12 +27,12 @@ const SearchBar = ({ term, setTerm, token, userEvents }) => {
   };
 
   const renderItems = () => {
-    return search.map((item) => {
+    return state.events.map((item) => {
       return (
         <TouchableNativeFeedback
           key={item._id}
           onPress={() => {
-            console.log("pressed");
+            clearEvents();
             navigate("EventDetailsEvents", {
               item,
               from: "Events",
@@ -88,10 +63,9 @@ const SearchBar = ({ term, setTerm, token, userEvents }) => {
           onChangeText={onTextChange}
           placeholder="Search for Event"
           placeholderTextColor={colorsMain.primary}
-          onSubmitEditing={() => console.log("Submited")}
         />
       </View>
-      {search.length ? (
+      {state.events.length ? (
         <View style={styles.dropdownList}>{renderItems()}</View>
       ) : null}
     </>

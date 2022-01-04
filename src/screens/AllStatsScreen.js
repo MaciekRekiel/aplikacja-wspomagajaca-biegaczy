@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
-import { Context as AuthContext } from "../context/AuthContext";
 import Header from "../components/mainFlow/Header";
 import CustomBackground from "../components/mainFlow/CustomBackground";
 import { colorsMain } from "../styles/colors";

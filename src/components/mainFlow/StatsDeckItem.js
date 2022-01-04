@@ -9,28 +9,33 @@ import { nightMapTheme } from "../../utils/customMapStyles";
 
 import { navigate } from "../../navigationRef";
 
-const StatsDeckItem = ({ id, date, distance, totalTime, calories, route }) => {
+const StatsDeckItem = ({ stat }) => {
   const renderDistance = () => {
-    let renderValue = distance / 1000;
+    let renderValue = stat.distance / 1000;
     return `${renderValue.toFixed(2)} km`;
   };
 
   const renderTime = () => {
-    let secValue = totalTime % 60;
-    let minValue = Math.floor(totalTime / 60);
+    let secValue = stat.totalTime % 60;
+    let minValue = Math.floor(stat.totalTime / 60);
     minValue < 10 ? (minValue = `0${minValue}`) : null;
     secValue < 10 ? (secValue = `0${secValue}`) : null;
     return `${minValue}:${secValue}`;
   };
 
   const renderCalories = () => {
-    return `${calories.toFixed(1)} Kcal`;
+    return `${stat.caloriesBurned.toFixed(1)} Kcal`;
   };
 
   return (
     <TouchableOpacity
       activeOpacity={0.7}
-      onPress={() => navigate("RunDetail", { id, date })}
+      onPress={() =>
+        navigate("RunDetailHome", {
+          stat,
+          from: "Home",
+        })
+      }
     >
       <LinearGradient
         start={{ x: 0, y: 0 }}
@@ -41,7 +46,7 @@ const StatsDeckItem = ({ id, date, distance, totalTime, calories, route }) => {
         ]}
         style={styles.box}
       >
-        <Text style={styles.dataHeader}>{date}</Text>
+        <Text style={styles.dataHeader}>{stat.date.slice(0, 10)}</Text>
         <View style={styles.row}>
           <View>
             <Text style={styles.textCenter}>Distance</Text>
@@ -66,7 +71,7 @@ const StatsDeckItem = ({ id, date, distance, totalTime, calories, route }) => {
           scrollEnabled={false}
           rotateEnabled={false}
           initialRegion={{
-            ...route[0].coords,
+            ...stat.route[0].coords,
             latitudeDelta: 0.001,
             longitudeDelta: 0.001,
           }}
@@ -74,12 +79,12 @@ const StatsDeckItem = ({ id, date, distance, totalTime, calories, route }) => {
           <Polyline
             strokeColor="rgba(2, 149, 182, 1)"
             strokeWidth={6}
-            coordinates={route.map((route) => route.coords)}
+            coordinates={stat.route.map((route) => route.coords)}
           />
           <Polyline
             strokeColor="rgba(31, 255, 218, 0.7)"
             strokeWidth={4}
-            coordinates={route.map((route) => route.coords)}
+            coordinates={stat.route.map((route) => route.coords)}
           />
         </MapView>
       </LinearGradient>
