@@ -178,8 +178,8 @@ const RunningScreen = ({ navigation }) => {
               distanceBetweenPoints = calculateDistance(
                 currentLocation.coords.latitude,
                 currentLocation.coords.longitude,
-                eventRoute.route[eventRoute.route.length - 1].coords.latitude,
-                eventRoute.route[eventRoute.route.length - 1].coords.longitude
+                eventRoute.route[0].coords.latitude,
+                eventRoute.route[0].coords.longitude
               );
             }
 
@@ -212,6 +212,7 @@ const RunningScreen = ({ navigation }) => {
   useEffect(() => {
     if (eventFinished) {
       stopTrackingLocation();
+      setShowModalFinished(true);
       setReset(true);
     }
   }, [eventFinished]);

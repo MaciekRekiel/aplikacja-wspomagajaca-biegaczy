@@ -3,6 +3,7 @@ import { StyleSheet, ActivityIndicator, StatusBar, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
 import { Context as AuthContext } from "../context/AuthContext";
+import { colorsMain } from "../styles/colors";
 
 const AuthResolveScreen = () => {
   const { autoLogin } = useContext(AuthContext);
@@ -17,7 +18,7 @@ const AuthResolveScreen = () => {
     <LinearGradient
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
-      colors={["hsl(203, 68%, 20%)", "hsl(203, 68%, 30%)"]}
+      colors={[colorsMain.backgroundPrimary, colorsMain.backgroundSecondary]}
       style={styles.container}
     >
       <StatusBar
@@ -26,7 +27,7 @@ const AuthResolveScreen = () => {
         barStyle="light-content"
       />
       <Text style={styles.textStyle}>RunnerApp</Text>
-      <ActivityIndicator size={64} color="rgba(211, 74, 74, 1)" />
+      <ActivityIndicator size={64} color={colorsMain.secondary} />
     </LinearGradient>
   );
 };

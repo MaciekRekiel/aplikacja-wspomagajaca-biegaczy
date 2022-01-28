@@ -6,15 +6,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Context as AuthContext } from "../context/AuthContext";
 import { Context as LocationContext } from "../context/LocationContext";
 import { Context as EventContext } from "../context/EventContext";
-import SwipeDeck from "../components/SwipeDeck";
 import Header from "../components/mainFlow/Header";
-import Stoper from "../components/Stoper";
-import Greetings from "../components/mainFlow/Greetings";
 import CustomBackground from "../components/mainFlow/CustomBackground";
+import Greetings from "../components/mainFlow/Greetings";
 import Button from "../components/mainFlow/Button";
+import SwipeDeck from "../components/SwipeDeck";
+import EventsCard from "../components/mainFlow/EventsCard";
+import Stoper from "../components/Stoper";
 import ModalInitialAsk from "../components/mainFlow/ModalInitialAsk";
 import ModalForm from "../components/mainFlow/ModalForm";
-import EventsCard from "../components/mainFlow/EventsCard";
 
 const HomeScreen = ({ navigation }) => {
   const {
@@ -30,17 +30,20 @@ const HomeScreen = ({ navigation }) => {
   const {
     state: { myEvents },
     searchForMyEvents,
+    signOut,
   } = useContext(EventContext);
 
   const [showModal, setShowModal] = useState(false);
   const [showFormModal, setShowFormModal] = useState(false);
 
+  // INITIAL GEOLOCALIZATION PERMISIONS
   const getPermissions = async () => {
     const { granted } = await requestForegroundPermissionsAsync();
     if (!granted) rejectPermissions();
     grantPermissions();
   };
 
+  // INITIAL MODAL TO SHOW
   const tryShowModal = async () => {
     const modalWasShown = await AsyncStorage.getItem("modalWasShown");
     if (!modalWasShown) {
@@ -49,6 +52,7 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
+  // SEARCH FOR EVENT THE USER TAKES PART IN
   const getMyEvents = async () => {
     if (user) {
       if (user.events.length) {
@@ -96,7 +100,11 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  // INITIAL PERMISSION REQUEST
+  const clearContext = () => {
+    signout();
+    signOut();
+  };
+
   useEffect(() => {
     if (!permissions) {
       getPermissionsAndTryShowModal();
@@ -107,7 +115,7 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <>
-      <Header title="Home" rightButton rightButtonCallback={signout} />
+      <Header title="Home" rightButton rightButtonCallback={clearContext} />
       <Stoper interval={1000} callback={setTime} show={running} />
       <CustomBackground>
         <View>

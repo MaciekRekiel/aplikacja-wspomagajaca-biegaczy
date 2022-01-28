@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import { ActivityIndicator, View, Text, StyleSheet } from "react-native";
-import CustomBackground from "../components/mainFlow/CustomBackground";
-import StatsComponent from "../components/mainFlow/StatsComponent";
+
 import { Context as AuthContext } from "../context/AuthContext";
-import Chart from "../components/mainFlow/Chart";
-import SwipeDeck from "../components/mainFlow/stats/SwipeDeck";
 import { colorsMain } from "../styles/colors";
+import CustomBackground from "../components/mainFlow/CustomBackground";
+import SwipeDeck from "../components/mainFlow/stats/SwipeDeck";
 
 const StatsScreen = () => {
   const {
@@ -19,6 +18,10 @@ const StatsScreen = () => {
       prepareComponents(user.statistics);
     }
   }, [user]);
+
+  if (!user) {
+    return null;
+  }
 
   const prepareComponents = async (stats) => {
     if (!stats.length) {
@@ -34,6 +37,7 @@ const StatsScreen = () => {
       setLoading(false);
       return;
     }
+
     // I WANT TO MODIFY THE ARR, CANT DO IT ON STATS
     let arr = [...stats];
     // UNIQUE YEARS DESCENDING ORDER
@@ -54,9 +58,6 @@ const StatsScreen = () => {
     setLoading(false);
   };
 
-  if (!user) {
-    return null;
-  }
   if (loading) {
     return (
       <CustomBackground safeAreaSecured justifyContent="center">

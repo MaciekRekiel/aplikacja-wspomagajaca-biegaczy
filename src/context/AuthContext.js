@@ -74,9 +74,7 @@ const loadUser = (dispatch) => {
           payload: { user: responseUser.data.user },
         });
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 };
 const editPassword = (dispatch) => {
@@ -120,7 +118,6 @@ const editPassword = (dispatch) => {
         );
         return true;
       } catch (error) {
-        console.log(error.response.data);
         dispatch({
           type: ADD_ERROR,
           payload: errorMessages,
@@ -150,12 +147,10 @@ const fetchStats = (dispatch) => {
         });
         navigate("Home");
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 };
-const uploadAvatar = (dispatch) => {
+const uploadAvatar = () => {
   return async ({ token, imageUri }) => {
     const formData = new FormData();
     formData.append("avatar", {
@@ -171,9 +166,7 @@ const uploadAvatar = (dispatch) => {
           Authorization: `Bearer ${token}`,
         },
       });
-    } catch (error) {
-      console.log(error.response.data);
-    }
+    } catch (error) {}
   };
 };
 const editAvatar = (dispatch) => {
@@ -345,7 +338,6 @@ const signup = (dispatch) => {
         dispatch({
           type: REMOVE_LOADING,
         });
-        console.log(error.response.data.errorMessages);
         dispatch({
           type: ADD_ERROR,
           payload: error.response.data.errorMessages,
@@ -382,7 +374,6 @@ const signin = (dispatch) => {
 
     if (_.isEmpty(errorMessages)) {
       try {
-        // Trying to log in
         dispatch({
           type: ADD_LOADING,
         });
@@ -391,7 +382,6 @@ const signin = (dispatch) => {
           password,
         });
 
-        // Savin auth token
         await AsyncStorage.setItem("token", response.data.token);
 
         // Fetching and saving all data about the user
@@ -410,7 +400,6 @@ const signin = (dispatch) => {
         navigate("Home");
       } catch (error) {
         // Server Validation Errors
-        console.log(error);
         dispatch({
           type: ADD_ERROR,
           payload: error.response.data.errorMessages,

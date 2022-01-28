@@ -5,10 +5,10 @@ import MapView, { Polyline } from "react-native-maps";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 
 import { Context as AuthContext } from "../context/AuthContext";
-import Header from "../components/mainFlow/Header";
-import CustomBackground from "../components/mainFlow/CustomBackground";
 import { nightMapTheme } from "../utils/customMapStyles";
 import { colorsMain } from "../styles/colors";
+import CustomBackground from "../components/mainFlow/CustomBackground";
+import Header from "../components/mainFlow/Header";
 
 const RunDetailsStatsScreen = ({ navigation }) => {
   const {

@@ -17,9 +17,18 @@ const ADD_LOADING = "ADD_LOADING";
 const REMOVE_LOADING = "REMOVE_LOADING";
 const EVENT_FINISHED = "EVENT_FINISHED";
 const RESET_EVENT_FINISHED = "RESET_EVENT_FINISHED";
+const SIGN_OUT = "SIGN_OUT";
 
 const eventReducer = (state, action) => {
   switch (action.type) {
+    case SIGN_OUT:
+      return {
+        events: [],
+        recommendedEvents: [],
+        myEvents: [],
+        loading: false,
+        eventFinished: false,
+      };
     case SET_EVENTS:
       return { ...state, events: [...action.payload] };
     case CLEAR_EVENTS:
@@ -39,6 +48,13 @@ const eventReducer = (state, action) => {
   }
 };
 
+const signOut = (dispatch) => {
+  return () => {
+    dispatch({
+      type: SIGN_OUT,
+    });
+  };
+};
 const searchForEvents = (dispatch) => {
   return async (query) => {
     if (query.name) {
@@ -108,6 +124,7 @@ const searchForRecommended = (dispatch) => {
           Authorization: `Bearer ${token}`,
         },
       });
+
       dispatch({
         type: SET_RECOMMENDED,
         payload: response.data || [],
@@ -262,6 +279,7 @@ export const { Provider, Context } = createDataContext(
     leaveEvent,
     doesFinishedEvent,
     resetFinishedEvent,
+    signOut,
   },
   {
     events: [],

@@ -1,9 +1,7 @@
 // REACT
 import React from "react";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
-import { createStackNavigator, Header } from "react-navigation-stack";
 import { createBottomTabNavigator } from "react-navigation-tabs";
-import { Animated, Easing } from "react-native";
 
 // ICONS
 import { Entypo, FontAwesome, MaterialIcons } from "@expo/vector-icons";
@@ -31,14 +29,14 @@ import ResetPasswordSuccessfulScreen from "./src/screens/ForgotPasswordScreens/R
 import RunDetailsScreen from "./src/screens/RunDetailsScreen";
 import RunDetailsStatsScreen from "./src/screens/RunDetailsStatsScreen";
 import AllStatsScreen from "./src/screens/AllStatsScreen";
-import EventDetailsEventsScreen from "./src/screens/EventDetailsEventsScreen";
+import EventDetailsScreen from "./src/screens/EventDetailsScreen";
 
 // HOME SCREEN
 const Home = createSwitchNavigator({
   Home: HomeScreen,
   Running: RunningScreen,
   RunDetailHome: RunDetailsScreen,
-  EventDetailsHome: EventDetailsEventsScreen,
+  EventDetailsHome: EventDetailsScreen,
 });
 Home.navigationOptions = {
   title: "Home",
@@ -47,12 +45,12 @@ Home.navigationOptions = {
   },
 };
 
+// STATS SCREEN
 const Stats = createSwitchNavigator({
   Stats: StatsScreen,
   RunDetailStats: RunDetailsStatsScreen,
   AllStats: AllStatsScreen,
 });
-
 Stats.navigationOptions = {
   title: "Statistics",
   tabBarIcon: ({ tintColor }) => {
@@ -60,11 +58,11 @@ Stats.navigationOptions = {
   },
 };
 
+// EVENTS SCREEN
 const Events = createSwitchNavigator({
   Events: EventsScreen,
-  EventDetailsEvents: EventDetailsEventsScreen,
+  EventDetailsEvents: EventDetailsScreen,
 });
-
 Events.navigationOptions = {
   title: "Events",
   tabBarIcon: ({ tintColor }) => {

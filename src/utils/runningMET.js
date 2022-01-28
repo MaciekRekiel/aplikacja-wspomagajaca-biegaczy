@@ -7,6 +7,10 @@ const MET_VALUES = {
   9.6: 10,
   8.0: 8.3,
   6.4: 6,
+  4.8: 4.5,
+  3.2: 3.5,
+  2: 2,
+  1.2: 1.4,
 };
 
 export const calc = (averageSpeed) => {

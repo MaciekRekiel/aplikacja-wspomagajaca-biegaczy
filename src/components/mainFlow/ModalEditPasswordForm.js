@@ -11,7 +11,6 @@ import { NavigationEvents } from "react-navigation";
 import { LinearGradient } from "expo-linear-gradient";
 
 import Input from "./Input";
-import CustomPicker from "./CustomPicker";
 import { colorsMain } from "../../styles/colors";
 import { SCREEN_WIDTH } from "../../utils/screen";
 import { Context as AuthContext } from "../../context/AuthContext";
@@ -65,9 +64,7 @@ const ModalEditPasswordForm = ({ modalVisible, setShowFormModal }) => {
                 setShowFormModal(false);
               }, 150)
             }
-            background={TouchableNativeFeedback.Ripple(
-              colorsMain.headerButtonBackgroundPrimary
-            )}
+            background={TouchableNativeFeedback.Ripple(colorsMain.secondary)}
           >
             <View style={styles.modalButton}>
               <Text style={styles.buttonText}>Cancel</Text>
@@ -86,16 +83,11 @@ const ModalEditPasswordForm = ({ modalVisible, setShowFormModal }) => {
               );
               setLoading(false);
             }}
-            background={TouchableNativeFeedback.Ripple(
-              colorsMain.headerButtonBackgroundPrimary
-            )}
+            background={TouchableNativeFeedback.Ripple(colorsMain.secondary)}
           >
             {loading ? (
               <View style={styles.modalButton}>
-                <ActivityIndicator
-                  size={18}
-                  color={colorsMain.headerButtonBackgroundSecondary}
-                />
+                <ActivityIndicator size={18} color={colorsMain.secondary} />
               </View>
             ) : (
               <View style={styles.modalButton}>
@@ -121,9 +113,7 @@ const ModalEditPasswordForm = ({ modalVisible, setShowFormModal }) => {
               setShowFormModal(false);
             }, 150)
           }
-          background={TouchableNativeFeedback.Ripple(
-            colorsMain.headerButtonBackgroundPrimary
-          )}
+          background={TouchableNativeFeedback.Ripple(colorsMain.secondary)}
         >
           <View style={styles.successButton}>
             <Text style={styles.buttonText}>Close</Text>

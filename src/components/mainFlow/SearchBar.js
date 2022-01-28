@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useCallback } from "react";
+import React, { useContext, useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -13,7 +13,7 @@ import { Context as EventContext } from "../../context/EventContext";
 import { colorsMain } from "../../styles/colors";
 import { navigate } from "../../navigationRef";
 
-const SearchBar = ({ term, setTerm, token, userEvents }) => {
+const SearchBar = ({ term, setTerm }) => {
   const { state, searchForEvents, clearEvents } = useContext(EventContext);
   const debouceRequest = useCallback((text) => request(text), []);
 
@@ -36,8 +36,6 @@ const SearchBar = ({ term, setTerm, token, userEvents }) => {
             navigate("EventDetailsEvents", {
               item,
               from: "Events",
-              token,
-              userEvents,
             });
           }}
         >

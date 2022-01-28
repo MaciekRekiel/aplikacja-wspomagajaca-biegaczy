@@ -4,10 +4,10 @@ import { ActivityIndicator } from "react-native";
 import { Context as LocationContext } from "../context/LocationContext";
 import { Context as AuthContext } from "../context/AuthContext";
 import { Context as EventContext } from "../context/EventContext";
+import { colorsMain } from "../styles/colors";
 import CustomBackground from "../components/mainFlow/CustomBackground";
 import SearchBar from "../components/mainFlow/SearchBar";
 import EventsCard from "../components/mainFlow/EventsCard";
-import { colorsMain } from "../styles/colors";
 
 const EventsScreen = () => {
   const {
@@ -22,18 +22,8 @@ const EventsScreen = () => {
     searchForMyEvents,
   } = useContext(EventContext);
 
-  if (!user) {
-    return null;
-  }
-
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
-
-  const initialSearch = async (currentLocation) => {
-    await searchForRecommended(currentLocation);
-    await searchForMyEvents();
-    setLoading(false);
-  };
 
   useEffect(() => {
     if (permissions) {
@@ -42,6 +32,16 @@ const EventsScreen = () => {
       setLoading(false);
     }
   }, []);
+
+  if (!user) {
+    return null;
+  }
+
+  const initialSearch = async (currentLocation) => {
+    await searchForMyEvents();
+    await searchForRecommended(currentLocation, myEvents);
+    setLoading(false);
+  };
 
   if (loading) {
     return (
@@ -52,47 +52,38 @@ const EventsScreen = () => {
   }
 
   const renderRecommended = () => {
-    if (user) {
-      return (
-        <EventsCard
-          header="Recommended"
-          caption="There isn't any upcoming events in your area..."
-          items={recommendedEvents}
-          from="Events"
-          to="EventDetailsEvents"
-          userEvents={user.events}
-          type="recommended"
-          token={token}
-        />
-      );
-    }
+    return (
+      <EventsCard
+        header="Recommended"
+        caption="There isn't any upcoming events in your area..."
+        from="Events"
+        to="EventDetailsEvents"
+        type="recommended"
+        items={recommendedEvents}
+        userEvents={user.events}
+        token={token}
+      />
+    );
   };
 
   const renderMyEvents = () => {
-    if (user) {
-      return (
-        <EventsCard
-          header="My Events"
-          caption="You don't take part in any event..."
-          items={myEvents}
-          from="Events"
-          to="EventDetailsEvents"
-          userEvents={user.events}
-          type="my_events"
-          token={token}
-        />
-      );
-    }
+    return (
+      <EventsCard
+        header="My Events"
+        caption="You don't take part in any event..."
+        from="Events"
+        to="EventDetailsEvents"
+        type="my_events"
+        items={myEvents}
+        userEvents={user.events}
+        token={token}
+      />
+    );
   };
 
   return (
     <CustomBackground safeAreaSecured justifyContent="flex-start">
-      <SearchBar
-        term={searchTerm}
-        setTerm={setSearchTerm}
-        token={token}
-        userEvents={user.events}
-      />
+      <SearchBar term={searchTerm} setTerm={setSearchTerm} />
       {renderMyEvents()}
       {renderRecommended()}
     </CustomBackground>

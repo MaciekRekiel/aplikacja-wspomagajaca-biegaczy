@@ -11,7 +11,7 @@ import serverInstance from "../apis/server";
 import { Context as AuthContext } from "../context/AuthContext";
 import { Context as EventContext } from "../context/EventContext";
 
-const EventDetailsEventsScreen = ({ navigation }) => {
+const EventDetailsScreen = ({ navigation }) => {
   const { loadUser } = useContext(AuthContext);
   const {
     state: { loading, myEvents },
@@ -142,4 +142,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EventDetailsEventsScreen;
+export default EventDetailsScreen;

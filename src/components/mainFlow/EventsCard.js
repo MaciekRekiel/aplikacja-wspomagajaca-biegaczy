@@ -3,7 +3,6 @@ import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
 import { colorsMain } from "../../styles/colors";
-import serverInstance from "../../apis/server";
 import { navigate } from "../../navigationRef";
 
 const EventsCard = ({ header, caption, items, from, to, userEvents, type }) => {

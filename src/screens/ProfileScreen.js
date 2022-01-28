@@ -3,14 +3,15 @@ import { View, Text, StyleSheet } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 
 import { Context as AuthContext } from "../context/AuthContext";
+import { colorsMain } from "../styles/colors";
+import { capitalize } from "../utils/capitalize";
 import CustomBackground from "../components/mainFlow/CustomBackground";
 import Avatar from "../components/mainFlow/Avatar";
-import { colorsMain } from "../styles/colors";
 import Button from "../components/mainFlow/Button";
 import ModalForm from "../components/mainFlow/ModalForm";
 import ModalEditPasswordForm from "../components/mainFlow/ModalEditPasswordForm";
 
-const ProfileScreen = ({ navigation }) => {
+const ProfileScreen = () => {
   const [imageModalVisible, setImageModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editPasswordModalVisible, setEditPasswordModalVisible] =
@@ -18,13 +19,10 @@ const ProfileScreen = ({ navigation }) => {
   const {
     state: { user },
   } = useContext(AuthContext);
+
   if (!user) {
     return null;
   }
-
-  const capitalize = (word) => {
-    return word.charAt(0).toUpperCase() + word.slice(1);
-  };
 
   return (
     <CustomBackground safeAreaSecured justifyContent="flex-start">

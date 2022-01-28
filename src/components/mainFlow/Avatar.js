@@ -71,12 +71,7 @@ const Avatar = ({ name, size, edit, editCallback, modalVisible }) => {
   const renderEditButton = (bool) => {
     return bool ? (
       <View style={styles.circle}>
-        <TouchableNativeFeedback
-          background={TouchableNativeFeedback.Ripple(
-            colorsMain.headerButtonBackgroundPrimary
-          )}
-          onPress={() => editCallback(true)}
-        >
+        <TouchableNativeFeedback onPress={() => editCallback(true)}>
           <View style={styles.insideCircle}>
             <Feather
               name="edit"

@@ -67,9 +67,7 @@ const ModalEditImage = ({ modalVisible, editCallback }) => {
                   editCallback(false);
                 }, 200)
               }
-              background={TouchableNativeFeedback.Ripple(
-                colorsMain.headerButtonBackgroundPrimary
-              )}
+              background={TouchableNativeFeedback.Ripple(colorsMain.secondary)}
             >
               <View style={styles.modalButton}>
                 <Text style={styles.buttonText}>Cancel</Text>
@@ -77,9 +75,7 @@ const ModalEditImage = ({ modalVisible, editCallback }) => {
             </TouchableNativeFeedback>
             <TouchableNativeFeedback
               onPress={pickImage}
-              background={TouchableNativeFeedback.Ripple(
-                colorsMain.headerButtonBackgroundPrimary
-              )}
+              background={TouchableNativeFeedback.Ripple(colorsMain.secondary)}
             >
               <View style={styles.modalButton}>
                 <Text style={styles.buttonText}>Choose</Text>
